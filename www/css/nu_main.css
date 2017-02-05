@@ -1,0 +1,116 @@
+
+{
+    margin: 0;
+    padding: 0;
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+    box-sizing: border-box;
+}
+
+a:link {
+    color: #BB772D;
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #BB772D;
+}
+a:hover {
+    text-decoration: none;
+    color: #f00;
+}
+a:active {
+    text-decoration: none;
+    color: #BB772D;
+}
+
+td, th {
+    color: #A0522D;
+}
+
+h3 {
+    font-size: 2rem;
+    margin-bottom: 0;
+}
+
+p {
+    color: #d0d0d0;
+}
+
+
+.note{
+    color:#cc4725;
+    font-weight: bold
+}
+.container-full{
+    width:100%;
+    padding:20px 0;
+}
+.container-full::after, .navbar::after{
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+.navbar-list {
+    list-style: outside none none;
+    margin-bottom: 0px;
+}
+.navbar-item {
+    position: relative;
+    float: left;
+    margin-bottom: 0px;
+}
+.navbar{
+    width: 100%;
+    /*background: #ECECEC none repeat scroll 0% 0%;*/
+    /*border-bottom: 1px solid #DDD;
+    border-top: 1px solid #DDD;*/
+}
+.navbar-link {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2rem;
+    margin-right: 35px;
+    text-decoration: none;
+    line-height: 6.5rem;
+    color: #222;
+}
+.post.date{
+    padding:30px 0;
+}
+.post.date h2 {
+    font-size: 4rem;
+    margin-bottom: 0;
+}
+.post.date .date{
+    font-style: italic;
+}
+.banner>img, .five.columns img{
+    width: 100%
+}
+code{
+    background-color: #222;
+}
+
+@media (min-width: 750px) {
+    .seven.columns{
+        border-right:1px solid #d8d8d8;
+        padding-right:30px;
+    }
+}
+
+
+/*  -------------Original CSS for Project 1 and Index--------*/
+
+
+/*a:link {
+    color: #F00;
+    text-decoration: none;
+}*/
+
+

@@ -1,0 +1,471 @@
+/*Project 1 -60 -560*/
+			.button0 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button0 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button0 span:after {
+			  content:"»Techniques, Narrative, Database, Film, Digital Media";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -560px;
+			  transition: 0.5s;
+			}
+
+			.button0:hover span {
+			  padding-right: 420px;
+			}
+
+			.button0:hover span:after {
+			  opacity: 1;
+			  right: -60px;
+			}
+/*Project 2*/
+			
+			.button1 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button1 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button1 span:after {
+			  content:"»Surveillance and Media";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -500px;
+			  transition: 0.5s;
+			}
+
+			.button1:hover span {
+			  padding-right: 253px;
+			}
+
+			.button1:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+
+/*Homepage*/
+			.button2 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 2px;
+			  width: 10%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button2 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button2 span:after {
+			  content:"«";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  left: -20px;
+			  transition: 0.5s;
+			}
+
+			.button2:hover span {
+			  padding-left: 10px;
+			}
+
+			.button2:hover span:after {
+			  opacity: 1;
+			  left: -7px;
+			}
+
+/*reading 1*/
+			.button3 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button3 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button3 span:after {
+			  content:"»Digital Media";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -400px;
+			  transition: 0.5s;
+			}
+
+			.button3:hover span {
+			  padding-right: 160px;
+			}
+
+			.button3:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+
+/*reading 2*/
+			.button4 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button4 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button4 span:after {
+			  content:"»Point of View";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -300px;
+			  transition: 0.5s;
+			}
+
+			.button4:hover span {
+			  padding-right: 160px;
+			}
+
+			.button4:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+
+/*reading 3*/
+			.button5 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button5 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button5 span:after {
+			  content:"»Loglines";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -300px;
+			  transition: 0.5s;
+			}
+
+			.button5:hover span {
+			  padding-right: 120px;
+			}
+
+			.button5:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+			
+/*Project 3*/
+			.button6 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button6 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button6 span:after {
+			  content:"»Paradox, Simulation, Process, & Sizzle";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -500px;
+			  transition: 0.5s;
+			}
+
+			.button6:hover span {
+			  padding-right: 300px;
+			}
+
+			.button6:hover span:after {
+			  opacity: 1;
+			  right: -60px;
+			}
+
+/*vlog*/
+			.button7 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button7 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button7 span:after {
+			  content:"»Ventriloquism";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -300px;
+			  transition: 0.5s;
+			}
+
+			.button7:hover span {
+			  padding-right: 165px;
+			}
+
+			.button7:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+
+/*Project 4*/
+			.button8 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button8 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button8 span:after {
+			  content:"»Fact and Fiction";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -300px;
+			  transition: 0.5s;
+			}
+
+			.button8:hover span {
+			  padding-right: 185px;
+			}
+
+			.button8:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+
+/*Archives*/
+			.button9 {
+			  border-radius: 4px;
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding: 20px;
+			  width: 50%;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin: 0px;
+			}
+			
+			.button9 span {
+			  cursor: pointer;
+			  display: inline-block;
+			  position: relative;
+			  transition: 0.5s;
+			}
+
+			.button9 span:after {
+			  content:"»All The Good Stuff";
+			  position: absolute;
+			  opacity: 0;
+			  top: 0;
+			  right: -300px;
+			  transition: 0.5s;
+			}
+
+			.button9:hover span {
+			  padding-right: 207px;
+			}
+
+			.button9:hover span:after {
+			  opacity: 1;
+			  right: 30px;
+			}
+/*Dropdown Button*/
+			
+			.dropbtn {
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding-right: 10px;
+			  padding-left: 10px;
+			  transition: all 0.5s;
+			  cursor: pointer;
+			  margin-left: 10px;
+			}
+
+			.dropdown {
+				padding-left: 110px;
+			    position: relative;
+			    display: inline-block;
+			}
+
+			.dropdown-content {
+			    display: none;
+			    position: absolute;
+			    background-color: #f9f9f9;
+			    min-width: 160px;
+			    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			}
+
+			.dropdown-content a {
+			    color: black;
+			    padding: 12px 16px;
+			    text-decoration: none;
+			    display: block;
+			}
+
+			.dropdown-content a:hover {background-color: #f1f1f1}
+
+			.dropdown:hover .dropdown-content {
+			    display: block;
+			}
+
+			.dropdown:hover .dropbtn {
+			    background-color: crimson;
+			    color: white;
+			  
+			        	border-radius: 8px;
+			}
+
+
+
+			.buttonhover {
+			  background-color: transparent;
+			  border: none;
+			  color: #000000;
+			  text-align: center;
+			  font-size: 20px;
+			  padding-right: 10px;
+			  padding-left: 10px;
+			  transition: 0.5s;
+			  cursor: pointer;
+			  margin-left: 10px;
+			
+			}	
+
+			.buttonhover:hover {
+			    background-color: crimson;
+			    color: white;
+			  
+			        	border-radius: 8px;
+			}
+
