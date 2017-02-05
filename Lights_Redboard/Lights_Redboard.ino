@@ -1,5 +1,6 @@
-#include <Adafruit_NeoPixel.h>
+#include <FastLED.h>
 
+#define NUM_LEDS 60
 #define CLK 2
 #define D0 3
 #define D1 4
@@ -12,14 +13,37 @@
 #define LEDSTRIP 11
 #define LED 13
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LEDSTRIP, NEO_GRB + NEO_KHZ800);
+#define FORWARD 0
+#define BACKWARD 1
+#define SLOW 250
+#define MEDIUM 50
+#define FAST 5
 
+void allColor(CRGB c);
+void allRandom();
+void turnAllOff();
+void solidRGB();
+void colorWipe();
+void rainbow(int cycles, int speed);
+void lightning(CRGB c, int simultaneous, int cycles, int speed);
+void theaterChase(CRGB c, int cycles, int speed);
+void cylon(CRGB c, int width, int speed);
+CRGB Wheel(byte WheelPos);
+CRGB randomColor();
+
+boolean direction = FORWARD;
+CRGB leds[NUM_LEDS];
 byte cmd = 0;
+byte data = 0;
+byte param[4] = {0,0,0,0};
+int nparam = 0;
+int paramsReceived = 0;
 
 void setup() 
 {
     Serial.begin(9600);
     Serial.println("Iniciado...");
+    
     pinMode(D0, INPUT);
     pinMode(D1, INPUT);
     pinMode(D2, INPUT);
@@ -30,159 +54,270 @@ void setup()
     pinMode(D7, INPUT);
     pinMode(LED, OUTPUT);
     pinMode(CLK, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(CLK), newdata, RISING);
     
-    strip.begin();
-    strip.show();
+    attachInterrupt(digitalPinToInterrupt(CLK), newdata, RISING);
+
+    FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
+
+    randomSeed(analogRead(0));
 }
 
 void loop() 
 {
   switch(cmd)
   {
+    // Turn all off
     case 0:
-      strip.show();
+      turnAllOff();
       break;
+      
+    // Solid RGB color
     case 1:
-      colorWipe(strip.Color(255, 0, 0), 50); // Red
+      if(paramsReceived == 0)
+      {
+          nparam = 4;
+          paramsReceived = 1;
+      }
+      else
+      {
+          solidRGB();
+      }
       break;
+
+    // Colorwipe
     case 2:
-      colorWipe(strip.Color(0, 255, 0), 50); // Green
+      if(paramsReceived == 0)
+      {
+          nparam = 4;
+          paramsReceived = 1;
+      }
+      else
+      {
+          colorWipe();
+      }
       break;
+
+    // Rainbow
     case 3:
-      colorWipe(strip.Color(0, 0, 255), 50); // Blue
+      rainbow(FAST,1);
       break;
+
+    // Random Color Lightning
     case 4:
-      rainbow(20);
+      lightning(NULL, 20,50,MEDIUM);
       break;
+
+    // Theater Chase
+    case 5:
+      theaterChase(randomColor(),10,SLOW);
+      break;
+
+    // Cylon
+    case 6:
+      cylon(randomColor(), 10,FAST);
+      break;
+      
     default:
-      strip.show();
+      turnAllOff();
       break;
   }
-
-  /*
-  if(on)
-  {
-    // Some example procedures showing how to display to the pixels:
-    colorWipe(strip.Color(255, 0, 0), 50); // Red
-    colorWipe(strip.Color(0, 255, 0), 50); // Green
-    colorWipe(strip.Color(0, 0, 255), 50); // Blue
-    // Send a theater pixel chase in...
-    theaterChase(strip.Color(127, 127, 127), 50); // White
-    theaterChase(strip.Color(127,   0,   0), 50); // Red
-    theaterChase(strip.Color(  0,   0, 127), 50); // Blue
-
-    rainbow(20);
-    rainbowCycle(20);
-    theaterChaseRainbow(50);
-  }
-  */
-
 }
 
 void newdata()
 {
-    cmd = 0;
-    cmd  = digitalRead(D0);
-    cmd |= digitalRead(D1) << 1;
-    cmd |= digitalRead(D2) << 2;
-    cmd |= digitalRead(D3) << 3;
-    cmd |= digitalRead(D4) << 4;
-    cmd |= digitalRead(D5) << 5;
-    cmd |= digitalRead(D6) << 6;
-    cmd |= digitalRead(D7) << 7;
-    Serial.print("Novo comando: ");
-    Serial.println(cmd, HEX);
-}
+    data = 0;
+    data  = digitalRead(D0);
+    data |= digitalRead(D1) << 1;
+    data |= digitalRead(D2) << 2;
+    data |= digitalRead(D3) << 3;
+    data |= digitalRead(D4) << 4;
+    data |= digitalRead(D5) << 5;
+    data |= digitalRead(D6) << 6;
+    data |= digitalRead(D7) << 7;
 
-
-// Fill the dots one after the other with a color
-void colorWipe(uint32_t c, uint8_t wait) 
-{
-  for(uint16_t i=0; i<strip.numPixels(); i++) 
-  {
-      strip.setPixelColor(i, c);
-      strip.show();
-      delay(wait);
-  }
-}
-
-void rainbow(uint8_t wait) 
-{
-  uint16_t i, j;
-
-  for(j=0; j<256; j++) 
-  {
-    for(i=0; i<strip.numPixels(); i++) 
+    if(nparam > 0)
     {
-      strip.setPixelColor(i, Wheel((i+j) & 255));
+      Serial.print("Novo parametro ");
+      Serial.print(nparam);
+      Serial.print(": ");
+      Serial.println(data, HEX);
+      param[4 - nparam] = data;
+      nparam--;
     }
-    strip.show();
-    delay(wait);
-  }
+    else
+    {
+      cmd = data;
+      paramsReceived = 0;
+      Serial.print("Novo comando: ");
+      Serial.println(data, HEX);
+    } 
 }
 
-// Slightly different, this makes the rainbow equally distributed throughout
-void rainbowCycle(uint8_t wait) {
-  uint16_t i, j;
-
-  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
-    for(i=0; i< strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
-    }
-    strip.show();
-    delay(wait);
+// Changes all LEDS to given color
+void allColor(CRGB c){
+  for(int i=0; i<NUM_LEDS; i++){
+    leds[i] = c;
   }
+  FastLED.show();
 }
 
-//Theatre-style crawling lights.
-void theaterChase(uint32_t c, uint8_t wait) {
-  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
-    for (int q=0; q < 3; q++) {
-      for (int i=0; i < strip.numPixels(); i=i+3) {
-        strip.setPixelColor(i+q, c);    //turn every third pixel on
+void allRandom(){
+  for(int i=0; i<NUM_LEDS; i++){
+    leds[i] = randomColor();
+  }
+  FastLED.show(); 
+}
+
+// Turn-off
+void turnAllOff()
+{
+  for(int i=0; i<NUM_LEDS; i++)
+    leds[i] = CRGB::Black;
+  FastLED.show();
+}
+
+// Solid RGB
+void solidRGB()
+{
+  for(int i=0; i<NUM_LEDS; i++)
+  {
+    leds[i].red   = param[0];
+    leds[i].green = param[1];
+    leds[i].blue  = param[2];
+  }
+  FastLED.show();
+}
+
+// Wipes color from end to end
+void colorWipe()
+{
+  for(int i=0; i<NUM_LEDS; i++)
+  {
+    leds[i].red   = param[0];
+    leds[i].green = param[1];
+    leds[i].blue  = param[2];
+   }
+   FastLED.show();
+   delay(param[3]+1);
+}
+
+
+// Rainbow colors that slowly cycle across LEDs
+void rainbow(int cycles, int speed)
+{ 
+  if(cycles == 0)
+  {
+    for(int i=0; i< NUM_LEDS; i++) 
+    {
+      leds[i] = Wheel(((i * 256 / NUM_LEDS)) & 255);
+    }
+    FastLED.show();
+  }
+  else
+  {
+    for(int j=0; j<256*cycles; j++) 
+    {
+      for(int i=0; i< NUM_LEDS; i++) 
+      {
+        leds[i] = Wheel(((i * 256 / NUM_LEDS) + j) & 255);
       }
-      strip.show();
-     
-      delay(wait);
-     
-      for (int i=0; i < strip.numPixels(); i=i+3) {
-        strip.setPixelColor(i+q, 0);        //turn every third pixel off
+      FastLED.show();
+      delay(speed);
+    }
+  }
+}
+
+// Random flashes of lightning
+void lightning(CRGB c, int simultaneous, int cycles, int speed)
+{
+  int flashes[simultaneous];
+
+  for(int i=0; i<cycles; i++)
+  {
+    for(int j=0; j<simultaneous; j++)
+    {
+      int idx = random(NUM_LEDS);
+      flashes[j] = idx;
+      leds[idx] = c ? c : randomColor();
+    }
+    FastLED.show();
+    delay(speed);
+    for(int s=0; s<simultaneous; s++)
+    {
+      leds[flashes[s]] = CRGB::Black;
+    }
+    delay(speed);
+  }
+}
+
+// Theater-style crawling lights
+void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
+
+  for (int j=0; j<cycles; j++) {  
+    for (int q=0; q < 3; q++) {
+      for (int i=0; i < NUM_LEDS; i=i+3) {
+        int pos = i+q;
+        leds[pos] = c;    //turn every third pixel on
+      }
+      FastLED.show();
+
+      delay(speed);
+
+      for (int i=0; i < NUM_LEDS; i=i+3) {
+        leds[i+q] = CRGB::Black;        //turn every third pixel off
       }
     }
   }
 }
 
-//Theatre-style crawling lights with rainbow effect
-void theaterChaseRainbow(uint8_t wait) {
-  for (int j=0; j < 256; j++) {     // cycle all 256 colors in the wheel
-    for (int q=0; q < 3; q++) {
-        for (int i=0; i < strip.numPixels(); i=i+3) {
-          strip.setPixelColor(i+q, Wheel( (i+j) % 255));    //turn every third pixel on
-        }
-        strip.show();
-       
-        delay(wait);
-       
-        for (int i=0; i < strip.numPixels(); i=i+3) {
-          strip.setPixelColor(i+q, 0);        //turn every third pixel off
-        }
+// Sliding bar across LEDs
+void cylon(CRGB c, int width, int speed){
+  // First slide the leds in one direction
+  for(int i = 0; i <= NUM_LEDS-width; i++) {
+    for(int j=0; j<width; j++){
+      leds[i+j] = c;
     }
+
+    FastLED.show();
+
+    // now that we've shown the leds, reset to black for next loop
+    for(int j=0; j<5; j++){
+      leds[i+j] = CRGB::Black;
+    }
+    delay(speed);
+  }
+
+  // Now go in the other direction.  
+  for(int i = NUM_LEDS-width; i >= 0; i--) {
+    for(int j=0; j<width; j++){
+      leds[i+j] = c;
+    }
+    FastLED.show();
+    for(int j=0; j<width; j++){
+      leds[i+j] = CRGB::Black;
+    }
+
+    delay(speed);
   }
 }
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
-uint32_t Wheel(byte WheelPos) {
-  WheelPos = 255 - WheelPos;
+CRGB Wheel(byte WheelPos) {
   if(WheelPos < 85) {
-   return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
-  } else if(WheelPos < 170) {
+    return CRGB(WheelPos * 3, 255 - WheelPos * 3, 0);
+  } 
+  else if(WheelPos < 170) {
     WheelPos -= 85;
-   return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
-  } else {
-   WheelPos -= 170;
-   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+    return CRGB(255 - WheelPos * 3, 0, WheelPos * 3);
+  } 
+  else {
+    WheelPos -= 170;
+    return CRGB(0, WheelPos * 3, 255 - WheelPos * 3);
   }
+}
+
+CRGB randomColor(){
+  return Wheel(random(256)); 
 }
 
