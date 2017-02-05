@@ -13,15 +13,15 @@ var Edison = require('edison-io');
 var sys = require('sys')
 var exec = require('child_process').exec;
 var child;
-var SerialPort = require("serialport").SerialPort; 
+var SerialPort = require("serialport");
 
-var serialPort = new SerialPort("/dev/ttyMFD1", {  
-  baudrate: 9600  
-}, false);  
+var port = new SerialPort("/dev/ttyMFD1", {
+  baudRate: 9600
+});
 
-serialPort.on("open", function () {
+port.on('open', function() {
   console.log('serial port opened');
-  serialPort.on('data', function(data) {
+  port.on('data', function(data) {
     console.log('data received:' + data);
   });
 });
