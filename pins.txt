@@ -1,0 +1,5 @@
+Redboard   2     3     4     5     6    7      8     9     10     11
+Edison   GP44  GP45  GP46  GP47  GP48  GP49  GP15  GP14   GP13   
+MRAA      31    45    32    46    33    47    48    36     14     
+Code      CLK   D0    D1    D2    D3    D4    D5    D6     D7
+Other                                                           LEDSTRIP
