@@ -10,6 +10,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var five = require('johnny-five');
 var Edison = require('edison-io');
+var sys = require('sys')
+var exec = require('child_process').exec;
+var child;
 
 // Create a new Johnny-Five board object
 var board = new five.Board({
@@ -18,7 +21,9 @@ var board = new five.Board({
 
 // Initialization callback that is called when Johnny-Five is done initializing
 board.on('ready', function() {
-    
+    var exec = require('child_process').exec;
+    var cmd = 'configure_edison --enableOneTimeSetup';
+    exec(cmd, function(error, stdout, stderr) {});
 });
 
 // Request logging
