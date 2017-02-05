@@ -13,6 +13,18 @@ var Edison = require('edison-io');
 var sys = require('sys')
 var exec = require('child_process').exec;
 var child;
+var SerialPort = require("serialport").SerialPort; 
+
+var serialPort = new SerialPort("/dev/ttyMFD1", {  
+  baudrate: 9600  
+}, false);  
+
+serialPort.on("open", function () {
+  console.log('serial port opened');
+  serialPort.on('data', function(data) {
+    console.log('data received:' + data);
+  });
+});
 
 // Create a new Johnny-Five board object
 var board = new five.Board({
