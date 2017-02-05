@@ -3,7 +3,7 @@ var sitePath = "www";
 var port = 80;
 
 // Libraries
-var mraa = require('mraa');
+var m = require('mraa');
 var fs = require('fs');
 var express = require('express');
 var app = express();
