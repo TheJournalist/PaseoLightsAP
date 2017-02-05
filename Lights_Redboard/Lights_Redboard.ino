@@ -35,7 +35,7 @@ boolean direction = FORWARD;
 CRGB leds[NUM_LEDS];
 byte cmd = 0;
 byte data = 0;
-byte param[4] = {0,0,0,0};
+byte param[3] = {0,0,0};
 int nparam = 0;
 int paramsReceived = 0;
 
@@ -75,7 +75,7 @@ void loop()
     case 1:
       if(paramsReceived == 0)
       {
-          nparam = 4;
+          nparam = 3;
           paramsReceived = 1;
       }
       else
@@ -84,36 +84,23 @@ void loop()
       }
       break;
 
-    // Colorwipe
-    case 2:
-      if(paramsReceived == 0)
-      {
-          nparam = 4;
-          paramsReceived = 1;
-      }
-      else
-      {
-          colorWipe();
-      }
-      break;
-
     // Rainbow
-    case 3:
+    case 2:
       rainbow(FAST,1);
       break;
 
     // Random Color Lightning
-    case 4:
+    case 3:
       lightning(NULL, 20,50,MEDIUM);
       break;
 
     // Theater Chase
-    case 5:
+    case 4:
       theaterChase(randomColor(),10,SLOW);
       break;
 
     // Cylon
-    case 6:
+    case 5:
       cylon(randomColor(), 10,FAST);
       break;
       
@@ -141,7 +128,7 @@ void newdata()
       Serial.print(nparam);
       Serial.print(": ");
       Serial.println(data, HEX);
-      param[4 - nparam] = data;
+      param[3 - nparam] = data;
       nparam--;
     }
     else
@@ -320,4 +307,3 @@ CRGB Wheel(byte WheelPos) {
 CRGB randomColor(){
   return Wheel(random(256)); 
 }
-
