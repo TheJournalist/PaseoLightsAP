@@ -28,6 +28,10 @@ port.on('open', function() {
   });
 });
 
+port.on('error', function(error) {
+   console.log('Error: '+ error);
+});
+
 // Create a new Johnny-Five board object
 var board = new five.Board({
     io: new Edison()
