@@ -51,7 +51,7 @@ var CLK = new m.Gpio(31);
 CLK.dir(m.DIR_OUT);
 CLK.write(false);
 
-function sendCMD(var data)
+function sendCMD(data)
 {
   D0.write(data & 0x01);
   D1.write((data & 0x02) >> 1);
