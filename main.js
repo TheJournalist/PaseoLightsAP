@@ -14,6 +14,8 @@ var sys = require('sys')
 var exec = require('child_process').exec;
 var child;
 var SerialPort = require("serialport");
+var m = require('mraa');
+var uart = new m.Uart(0);
 
 var port = new SerialPort("/dev/ttyMFD1", {
   baudRate: 9600
