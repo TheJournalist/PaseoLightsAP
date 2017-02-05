@@ -3,37 +3,86 @@ var sitePath = "www";
 var port = 80;
 
 // Libraries
+var mraa = require('mraa');
 var fs = require('fs');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var five = require('johnny-five');
+var Edison = require('edison-io');
 var sys = require('sys')
-var child;
-var SerialPort = require("serialport");
-var m = require('mraa');
-var uart = new m.Uart(0);
-
-var port = new SerialPort("/dev/ttyMFD1", {
-  baudRate: 9600
-});
-
-port.on('open', function() {
-  console.log('serial port opened');
-  
-  port.on('data', function(data) {
-    console.log('data received:' + data);
-  });
-  
-  port.on('error', function(error) {
-   console.log('Error: '+ error);
-  });
-});
-
 var exec = require('child_process').exec;
-var cmd = 'configure_edison --enableOneTimeSetup';
-exec(cmd, function(error, stdout, stderr) {});
+var child;
 
+var D0 = new m.Gpio(45); 
+D0.dir(m.DIR_OUT);
+D0.write(false);
+
+var D1 = new m.Gpio(32); 
+D1.dir(m.DIR_OUT);
+D1.write(false);
+
+var D2 = new m.Gpio(46); 
+D2.dir(m.DIR_OUT);
+D2.write(false);
+
+var D3 = new m.Gpio(33); 
+D3.dir(m.DIR_OUT);
+D3.write(false);
+
+var D4 = new m.Gpio(47); 
+D4.dir(m.DIR_OUT);
+D4.write(false);
+
+var D5 = new m.Gpio(48); 
+D5.dir(m.DIR_OUT);
+D5.write(false);
+
+var D6 = new m.Gpio(36); 
+D6.dir(m.DIR_OUT);
+D6.write(false);
+
+var D7 = new m.Gpio(14); 
+D7.dir(m.DIR_OUT);
+D7.write(false);
+
+var CLK = new m.Gpio(31); 
+CLK.dir(m.DIR_OUT);
+CLK.write(false);
+
+function sendCMD(var data)
+{
+  D0.write(data & 0x01);
+  D1.write((data & 0x02) >> 1);
+  D2.write((data & 0x04) >> 2);
+  D3.write((data & 0x08) >> 3);
+  D4.write((data & 0x16) >> 4);
+  D5.write((data & 0x32) >> 5);
+  D6.write((data & 0x64) >> 6);
+  D7.write((data & 0x128) >> 7);
+  
+  CLK.write(true);
+  setTimeout(fall,100); //call the indicated function after 1 second (1000 milliseconds)
+}
+
+function fall()
+{
+  CLK.write(false);
+}
+
+
+// Create a new Johnny-Five board object
+var board = new five.Board({
+    io: new Edison()
+});
+
+// Initialization callback that is called when Johnny-Five is done initializing
+board.on('ready', function() {
+    var exec = require('child_process').exec;
+    var cmd = 'configure_edison --enableOneTimeSetup';
+    exec(cmd, function(error, stdout, stderr) {});
+});
 
 // Request logging
 app.use(function(req, res, next) {
@@ -113,3 +162,4 @@ app.use(express.static(__dirname + '/' + sitePath));
 http.listen(port, function() {
     console.log("Server running at: http://localhost:" + port);
 });
+sendCMD(0x04);
