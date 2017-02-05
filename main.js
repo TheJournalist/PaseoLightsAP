@@ -95,64 +95,12 @@ app.use(function(req, res, next) {
 // Create a handler for when a client connects via socket.io
 io.on('connection', function(socket) {
     var clientIP = socket.client.conn.remoteAddress;
-
-    /*
-    // If we get a score, compare it to other scores
-    socket.on('score', function(score) {
-        console.log(clientIP + ": " + score);
-        if (score > scoreContent.highscores[scoreContent.highscores.length - 1].score) {
-            console.log("High score! Requesting initials");
-            socket.emit('initialsRequest', '');
-        }
+  
+    socket.on('command', function(command) {
+        console.log(clientIP + ": COMANDO " + command);
+        
     });
     
-    // If we get initials back, store them with the high scores
-    socket.on('initialsScore', function(msg) {
-        console.log(msg.initials + ": " + msg.score);
-        
-        // Check for top score
-        if (msg.score > scoreContent.highscores[0].score) {
-            scoreContent.highscores.splice(0, 0, {
-                        "initials": msg.initials, 
-                        "score": msg.score
-            });
-            scoreContent.highscores.splice(-1, 1);
-            
-        // Check for other placement in high scores
-        } else {
-            for (var i = scoreContent.highscores.length - 1; i >= 0; i--) {
-                if ((msg.score <= scoreContent.highscores[i].score) || 
-                    (i === 0)) {
-                    if (i === scoreContent.highscores.length - 1) {
-                        scoreContent.highscores.push({
-                            "initials": msg.initials, 
-                            "score": msg.score
-                        });
-                    } else {
-                        scoreContent.highscores.splice(i + 1, 0, {
-                            "initials": msg.initials, 
-                            "score": msg.score
-                        });
-                    }
-                    console.log(scoreContent.highscores);
-                    scoreContent.highscores.splice(-1, 1);
-                    break;
-                }
-            }
-        }
-        console.log(scoreContent.highscores);
-        
-        // Write high scores to file
-        fs.writeFile(__dirname + "/" + highscoresFile, 
-                     JSON.stringify(scoreContent, null, 4), function(err) {
-            if (err) {
-                console.log("Cound not save high scores: " + err);
-            } else {
-                console.log("High scores saved");
-            }
-        });
-    })
-    */
 });
 
 // Start server
@@ -162,4 +110,4 @@ app.use(express.static(__dirname + '/' + sitePath));
 http.listen(port, function() {
     console.log("Server running at: http://localhost:" + port);
 });
-sendCMD(0x04);
+//sendCMD(0x04);
