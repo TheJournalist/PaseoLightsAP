@@ -13,7 +13,7 @@
         <link rel="stylesheet" type="text/css" href="jquery-ui.css" media = "all"/>
         <link rel="stylesheet" href="farbtastic.css" type="text/css" />
         <style type="text/css">
-
+        
     #red .ui-slider-range,#red .ui-slider-handle{
         background: #ef2929;
     }
@@ -88,7 +88,7 @@
             }
            
             var socket = io.connect('http://paseolights.local:80');
-
+            
             function sendColors(){
                 var red=$("#red").slider("value");
                 var green=$("#green").slider("value");
@@ -98,28 +98,27 @@
                 setTimeout(sendCMD(green), 30);
                 setTimeout(sendCMD(blue), 45);
             }
-
             function sendCMD(cmd){
                 socket.emit('command', cmd);
-}
-
-$(document).on("click", ".click-led", function() {
-    sendCMD($(this).val());
-
-});
-$(document).on("click", ".pick-color", function() {
-    sendCMD($(this).val());
-    sendColors();
-});
+            }
+            
+            $(document).on("click", ".click-led", function() {
+                sendCMD($(this).val());
+            });
+            
+            $(document).on("click", ".pick-color", function() {
+                sendCMD($(this).val());
+                sendColors();
+            });
+            
         });
-     </script>
-
+    </script>
 
     </head>
     <body>
         <h1>Bitches</h1>
         <br>
-        <div id = "sliders">
+        <div id ="sliders">
         <div id="colorpicker"></div>
         <div id="swatch" class="ui-widget-content ui-corner-all">
             <div id="innerswatch">#000000</div>
