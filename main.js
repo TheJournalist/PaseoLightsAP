@@ -17,39 +17,39 @@ var child;
 
 var D0 = new m.Gpio(45); 
 D0.dir(m.DIR_OUT);
-D0.write(false);
+D0.write(0);
 
 var D1 = new m.Gpio(32); 
 D1.dir(m.DIR_OUT);
-D1.write(false);
+D1.write(0);
 
 var D2 = new m.Gpio(46); 
 D2.dir(m.DIR_OUT);
-D2.write(false);
+D2.write(0);
 
 var D3 = new m.Gpio(33); 
 D3.dir(m.DIR_OUT);
-D3.write(false);
+D3.write(0);
 
 var D4 = new m.Gpio(47); 
 D4.dir(m.DIR_OUT);
-D4.write(false);
+D4.write(0);
 
 var D5 = new m.Gpio(48); 
 D5.dir(m.DIR_OUT);
-D5.write(false);
+D5.write(0);
 
 var D6 = new m.Gpio(36); 
 D6.dir(m.DIR_OUT);
-D6.write(false);
+D6.write(0);
 
 var D7 = new m.Gpio(14); 
 D7.dir(m.DIR_OUT);
-D7.write(false);
+D7.write(0);
 
 var CLK = new m.Gpio(31); 
 CLK.dir(m.DIR_OUT);
-CLK.write(false);
+CLK.write(0);
 
 function sendCMD(data)
 {
