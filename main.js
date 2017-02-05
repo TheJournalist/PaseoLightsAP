@@ -8,10 +8,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var five = require('johnny-five');
-var Edison = require('edison-io');
 var sys = require('sys')
-var exec = require('child_process').exec;
 var child;
 var SerialPort = require("serialport");
 var m = require('mraa');
@@ -23,26 +20,20 @@ var port = new SerialPort("/dev/ttyMFD1", {
 
 port.on('open', function() {
   console.log('serial port opened');
+  
   port.on('data', function(data) {
     console.log('data received:' + data);
   });
-});
-
-port.on('error', function(error) {
+  
+  port.on('error', function(error) {
    console.log('Error: '+ error);
+  });
 });
 
-// Create a new Johnny-Five board object
-var board = new five.Board({
-    io: new Edison()
-});
+var exec = require('child_process').exec;
+var cmd = 'configure_edison --enableOneTimeSetup';
+exec(cmd, function(error, stdout, stderr) {});
 
-// Initialization callback that is called when Johnny-Five is done initializing
-board.on('ready', function() {
-    var exec = require('child_process').exec;
-    var cmd = 'configure_edison --enableOneTimeSetup';
-    exec(cmd, function(error, stdout, stderr) {});
-});
 
 // Request logging
 app.use(function(req, res, next) {
