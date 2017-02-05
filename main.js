@@ -98,7 +98,7 @@ io.on('connection', function(socket) {
   
     socket.on('command', function(command) {
         console.log(clientIP + ": COMANDO " + command);
-        
+        sendCMD(command);
     });
     
 });
