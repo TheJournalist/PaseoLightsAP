@@ -62,13 +62,13 @@ function sendCMD(data)
   D6.write((data & 0x64) >> 6);
   D7.write((data & 0x128) >> 7);
   
-  CLK.write(true);
+  CLK.write(1);
   setTimeout(fall,100); //call the indicated function after 1 second (1000 milliseconds)
 }
 
 function fall()
 {
-  CLK.write(false);
+  CLK.write(0);
 }
 
 
