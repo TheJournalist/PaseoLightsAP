@@ -9,7 +9,7 @@ $(document).on("click", ".click-led", function() {
     var green=$("#green").slider("value");
     var blue=$("#blue").slider("value");
     sendCMD($(this).val());
-    setTimeout(sendCMD(red), 15);
-    setTimeout(sendCMD(green), 30);
-    setTimeout(sendCMD(blue), 45);
+    setTimeout(sendCMD(red), 20);
+    setTimeout(sendCMD(green), 40);
+    setTimeout(sendCMD(blue), 60);
 });
