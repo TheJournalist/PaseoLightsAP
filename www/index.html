@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="jquery-1.10.1.min.js"></script>
         <script src="socket.io.js"></script>
-<!--         <script src="index.js"></script> -->
+        <script src="index.js"></script>
         <script src="jquery.min.js" type="text/javascript"></script>
         <script src="jquery-ui.min.js" type="text/javascript"></script>
         <script src="farbtastic.js" type="text/javascript"></script>
@@ -86,30 +86,6 @@
                 $("#green").slider("value",green);
                 $("#blue").slider("value",blue);        
             }
-           
-            var socket = io.connect('http://paseolights.local:80');
-            
-            function sendColors(){
-                var red=$("#red").slider("value");
-                var green=$("#green").slider("value");
-                var blue=$("#blue").slider("value");
-                alert(red);
-                setTimeout(sendCMD(red), 15);
-                setTimeout(sendCMD(green), 30);
-                setTimeout(sendCMD(blue), 45);
-            }
-            function sendCMD(cmd){
-                socket.emit('command', cmd);
-            }
-            
-            $(document).on("click", ".click-led", function() {
-                sendCMD($(this).val());
-            });
-            
-            $(document).on("click", ".pick-color", function() {
-                sendCMD($(this).val());
-                sendColors();
-            });
             
         });
     </script>
@@ -130,7 +106,7 @@
         </div>
         <div>
             <button type="button" class="click-led" id="led-off" value="0">Turn Off</button>
-            <button type="button" class="pick-color" id="led-sc" value="1">Solid Color</button>
+            <button type="button" class="click-led" id="led-sc" value="1">Solid Color</button>
             <button type="button" class="click-led" id="led-rainbow" value="2">Rainbow</button>
             <button type="button" class="click-led" id="led-lightning" value="3">Random Color Lightning</button>
             <button type="button" class="click-led" id="led-tc" value="4">Random Color Theater Chase</button>
