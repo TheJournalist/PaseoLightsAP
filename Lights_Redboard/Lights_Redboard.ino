@@ -37,6 +37,7 @@ boolean direction = FORWARD;
 CRGB leds[NUM_LEDS];
 byte cmd = 0;
 byte newcmd = 0;
+byte oldcmd = 0;
 byte data = 0;
 byte param[3] = {0,0,0};
 int nparam = 0;
@@ -59,10 +60,10 @@ void setup()
     pinMode(D7, INPUT);
     pinMode(LED, OUTPUT);
     pinMode(CLK, INPUT_PULLUP);
-    pinMode(PLATE, INPUT_PULLUP);
+    pinMode(PLATE, INPUT);
     
     attachInterrupt(digitalPinToInterrupt(CLK), newdata, RISING);
-    attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, RISING);
+    attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, CHANGE);
 
     FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
 
@@ -115,11 +116,20 @@ void loop()
 
 void platePressed()
 {
-  ///cmd = 6;
-  cmd = 2;
-  param[0] = 255;
-  param[1] = 0;
-  param[2] = 0;
+  if(digitalRead(PLATE) == 1)
+  {
+    oldcmd = cmd;
+     ///cmd = 6;
+    cmd = 2;
+    param[0] = 255;
+    param[1] = 0;
+    param[2] = 0;
+  }
+  else
+  {
+    cmd = oldcmd;
+  }
+ 
 }
 
 void newdata()
