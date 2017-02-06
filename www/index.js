@@ -12,13 +12,13 @@ $(document).on("click", ".click-led", function() {
     
     setTimeout(function fred() {
     socket.emit('command', red);
-    }, 15);
+    }, 1000);
     
     setTimeout(function fgreen() {
     socket.emit('command', green);
-    }, 30);
+    }, 2000);
     
     setTimeout(function fblue() {
     socket.emit('command', blue);
-    }, 45);
+    }, 3000);
 });
