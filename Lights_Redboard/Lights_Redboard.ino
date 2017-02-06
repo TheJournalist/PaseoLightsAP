@@ -123,9 +123,6 @@ void platePressed()
     oldcmd = cmd;
      ///cmd = 6;
     cmd = 2;
-    param[0] = 255;
-    param[1] = 0;
-    param[2] = 0;
   }
   else
   {
