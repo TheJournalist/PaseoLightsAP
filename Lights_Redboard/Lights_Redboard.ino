@@ -2,15 +2,16 @@
 
 #define NUM_LEDS 60
 #define CLK 2
-#define D0 3
-#define D1 4
-#define D2 5
-#define D3 6
-#define D4 7
-#define D5 8
-#define D6 9
-#define D7 10
-#define LEDSTRIP 11
+#define PLATE 3
+#define D0 4
+#define D1 5
+#define D2 6
+#define D3 7
+#define D4 8
+#define D5 9
+#define D6 10
+#define D7 11
+#define LEDSTRIP 12
 #define LED 13
 
 #define FORWARD 0
@@ -28,6 +29,7 @@ void rainbow(int cycles, int speed);
 void lightning(CRGB c, int simultaneous, int cycles, int speed);
 void theaterChase(CRGB c, int cycles, int speed);
 void cylon(CRGB c, int width, int speed);
+void middleOut();
 CRGB Wheel(byte WheelPos);
 CRGB randomColor();
 
@@ -40,7 +42,6 @@ byte param[3] = {0,0,0};
 int nparam = 0;
 
 long previousMillis = 0;  
-long interval = 100;
 unsigned long currentMillis;
 
 void setup() 
@@ -58,8 +59,10 @@ void setup()
     pinMode(D7, INPUT);
     pinMode(LED, OUTPUT);
     pinMode(CLK, INPUT_PULLUP);
+    pinMode(PLATE, INPUT_PULLUP);
     
     attachInterrupt(digitalPinToInterrupt(CLK), newdata, RISING);
+    attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, RISING);
 
     FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
 
@@ -99,11 +102,24 @@ void loop()
     case 5:
       cylon(randomColor(), 10,FAST);
       break;
-      
+
+    case 6:
+      middleOut();
+    break;
+    
     default:
       turnAllOff();
       break;
   }
+}
+
+void platePressed()
+{
+  ///cmd = 6;
+  cmd = 2;
+  param[0] = 255;
+  param[1] = 0;
+  param[2] = 0;
 }
 
 void newdata()
@@ -313,16 +329,17 @@ void cylon(CRGB c, int width, int speed){
     for(int j=0; j<5; j++){
       leds[i+j] = CRGB::Black;
     }
+    
     previousMillis = millis(); 
-      currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          break;
-        if(thisCmd != cmd)
-          return;
-      }
+    currentMillis = millis(); 
+    while(1)
+    {
+      currentMillis = millis();
+      if(currentMillis - previousMillis > speed)
+        break;
+      if(thisCmd != cmd)
+        return;
+    }
   }
 
   // Now go in the other direction.  
@@ -346,6 +363,11 @@ void cylon(CRGB c, int width, int speed){
           return;
       }
   }
+}
+
+void middleOut()
+{
+
 }
 
 // Input a value 0 to 255 to get a color value.
