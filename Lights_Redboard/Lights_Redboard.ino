@@ -34,10 +34,10 @@ CRGB randomColor();
 boolean direction = FORWARD;
 CRGB leds[NUM_LEDS];
 byte cmd = 0;
+byte newcmd = 0;
 byte data = 0;
 byte param[3] = {0,0,0};
 int nparam = 0;
-int paramsReceived = 0;
 
 long previousMillis = 0;  
 long interval = 100;
@@ -77,15 +77,7 @@ void loop()
       
     // Solid RGB color
     case 1:
-      if(paramsReceived == 0)
-      {
-          nparam = 3;
-          paramsReceived = 1;
-      }
-      else
-      {
-          solidRGB();
-      }
+       solidRGB();
       break;
 
     // Rainbow
@@ -134,11 +126,13 @@ void newdata()
       Serial.println(data, HEX);
       param[3 - nparam] = data;
       nparam--;
+      if(nparam == 0)
+        cmd = newcmd;
     }
     else
     {
-      cmd = data;
-      paramsReceived = 0;
+      newcmd = data;
+      nparam = 3;
       Serial.print("Novo comando: ");
       Serial.println(data, HEX);
     } 
