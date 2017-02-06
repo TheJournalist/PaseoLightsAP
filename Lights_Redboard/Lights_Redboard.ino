@@ -41,6 +41,7 @@ byte oldcmd = 0;
 byte data = 0;
 byte param[3] = {0,0,0};
 int nparam = 0;
+bool platepr = false;
 
 long previousMillis = 0;  
 unsigned long currentMillis;
@@ -116,7 +117,8 @@ void loop()
 
 void platePressed()
 {
-  if(digitalRead(PLATE) == 1)
+  platepr = !platepr;
+  if(platepr)
   {
     oldcmd = cmd;
      ///cmd = 6;
