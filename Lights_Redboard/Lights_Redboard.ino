@@ -216,8 +216,10 @@ void rainbow(int cycles, int speed)
       FastLED.show();
 
       previousMillis = millis(); 
+      currentMillis = millis(); 
       while(1)
       {
+        currentMillis = millis();
         if(currentMillis - previousMillis > speed)
           break;
         if(thisCmd != cmd)
@@ -245,13 +247,15 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed)
     FastLED.show();
 
     previousMillis = millis(); 
-    while(1)
-    {
-      if(currentMillis - previousMillis > speed)
-        break;
-      if(thisCmd != cmd)
-        return;
-    }
+      currentMillis = millis(); 
+      while(1)
+      {
+        currentMillis = millis();
+        if(currentMillis - previousMillis > speed)
+          break;
+        if(thisCmd != cmd)
+          return;
+      }
     
     for(int s=0; s<simultaneous; s++)
     {
@@ -259,13 +263,15 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed)
     }
     
     previousMillis = millis(); 
-    while(1)
-    {
-      if(currentMillis - previousMillis > speed)
-        break;
-      if(thisCmd != cmd)
-        return;
-    }
+      currentMillis = millis(); 
+      while(1)
+      {
+        currentMillis = millis();
+        if(currentMillis - previousMillis > speed)
+          break;
+        if(thisCmd != cmd)
+          return;
+      }
   }
 }
 
@@ -281,8 +287,10 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
       FastLED.show();
 
       previousMillis = millis(); 
+      currentMillis = millis(); 
       while(1)
       {
+        currentMillis = millis();
         if(currentMillis - previousMillis > speed)
           break;
         if(thisCmd != cmd)
@@ -312,8 +320,10 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
     previousMillis = millis(); 
+      currentMillis = millis(); 
       while(1)
       {
+        currentMillis = millis();
         if(currentMillis - previousMillis > speed)
           break;
         if(thisCmd != cmd)
@@ -332,8 +342,10 @@ void cylon(CRGB c, int width, int speed){
     }
 
     previousMillis = millis(); 
+      currentMillis = millis(); 
       while(1)
       {
+        currentMillis = millis();
         if(currentMillis - previousMillis > speed)
           break;
         if(thisCmd != cmd)
