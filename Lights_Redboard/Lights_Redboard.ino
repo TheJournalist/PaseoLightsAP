@@ -39,6 +39,10 @@ byte param[3] = {0,0,0};
 int nparam = 0;
 int paramsReceived = 0;
 
+long previousMillis = 0;  
+long interval = 100;
+unsigned long currentMillis;
+
 void setup() 
 {
     Serial.begin(9600);
@@ -192,6 +196,7 @@ void colorWipe()
 // Rainbow colors that slowly cycle across LEDs
 void rainbow(int cycles, int speed)
 { 
+  int thisCmd = 2;
   if(cycles == 0)
   {
     for(int i=0; i< NUM_LEDS; i++) 
@@ -209,7 +214,16 @@ void rainbow(int cycles, int speed)
         leds[i] = Wheel(((i * 256 / NUM_LEDS) + j) & 255);
       }
       FastLED.show();
-      delay(speed);
+
+      previousMillis = millis(); 
+      while(1)
+      {
+        if(currentMillis - previousMillis > speed)
+          break;
+        if(thisCmd != cmd)
+          return;
+      }
+      
     }
   }
 }
@@ -217,6 +231,7 @@ void rainbow(int cycles, int speed)
 // Random flashes of lightning
 void lightning(CRGB c, int simultaneous, int cycles, int speed)
 {
+  int thisCmd = 3;
   int flashes[simultaneous];
 
   for(int i=0; i<cycles; i++)
@@ -228,18 +243,35 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed)
       leds[idx] = c ? c : randomColor();
     }
     FastLED.show();
-    delay(speed);
+
+    previousMillis = millis(); 
+    while(1)
+    {
+      if(currentMillis - previousMillis > speed)
+        break;
+      if(thisCmd != cmd)
+        return;
+    }
+    
     for(int s=0; s<simultaneous; s++)
     {
       leds[flashes[s]] = CRGB::Black;
     }
-    delay(speed);
+    
+    previousMillis = millis(); 
+    while(1)
+    {
+      if(currentMillis - previousMillis > speed)
+        break;
+      if(thisCmd != cmd)
+        return;
+    }
   }
 }
 
 // Theater-style crawling lights
 void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
-
+   int thisCmd = 4;
   for (int j=0; j<cycles; j++) {  
     for (int q=0; q < 3; q++) {
       for (int i=0; i < NUM_LEDS; i=i+3) {
@@ -248,7 +280,14 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
       }
       FastLED.show();
 
-      delay(speed);
+      previousMillis = millis(); 
+      while(1)
+      {
+        if(currentMillis - previousMillis > speed)
+          break;
+        if(thisCmd != cmd)
+          return;
+      }
 
       for (int i=0; i < NUM_LEDS; i=i+3) {
         leds[i+q] = CRGB::Black;        //turn every third pixel off
@@ -259,6 +298,7 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
 
 // Sliding bar across LEDs
 void cylon(CRGB c, int width, int speed){
+   int thisCmd = 5;
   // First slide the leds in one direction
   for(int i = 0; i <= NUM_LEDS-width; i++) {
     for(int j=0; j<width; j++){
@@ -271,7 +311,14 @@ void cylon(CRGB c, int width, int speed){
     for(int j=0; j<5; j++){
       leds[i+j] = CRGB::Black;
     }
-    delay(speed);
+    previousMillis = millis(); 
+      while(1)
+      {
+        if(currentMillis - previousMillis > speed)
+          break;
+        if(thisCmd != cmd)
+          return;
+      }
   }
 
   // Now go in the other direction.  
@@ -284,7 +331,14 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
 
-    delay(speed);
+    previousMillis = millis(); 
+      while(1)
+      {
+        if(currentMillis - previousMillis > speed)
+          break;
+        if(thisCmd != cmd)
+          return;
+      }
   }
 }
 
