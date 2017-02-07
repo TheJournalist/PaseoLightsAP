@@ -63,7 +63,7 @@ function sendCMD(data)
   D7.write((data & 0x128) >> 7);
   
   CLK.write(1);
-  setTimeout(fall,5);
+  setTimeout(fall, 100);
 }
 
 function fall()
