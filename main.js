@@ -63,14 +63,11 @@ function sendCMD(data)
   D7.write((data & 0x128) >> 7);
   
   CLK.write(1);
-  setTimeout(fall, 100);
-}
 
-function fall()
-{
-  CLK.write(0);
+  setTimeout(function() {
+    CLK.write(0);
+  }, 100);
 }
-
 
 // Create a new Johnny-Five board object
 var board = new five.Board({
