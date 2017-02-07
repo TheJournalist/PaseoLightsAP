@@ -51,6 +51,11 @@ var CLK = new m.Gpio(31);
 CLK.dir(m.DIR_OUT);
 CLK.write(0);
 
+function fall()
+{
+  CLK.write(0);
+}
+
 function sendCMD(data)
 {
   D0.write(data & 0x01);
@@ -63,10 +68,7 @@ function sendCMD(data)
   D7.write((data & 0x128) >> 7);
   
   CLK.write(1);
-
-  setTimeout(function() {
-    CLK.write(0);
-  }, 100);
+  setTimeout(fall, 100);
 }
 
 // Create a new Johnny-Five board object
