@@ -10,15 +10,15 @@ $(document).on("click", ".click-led", function() {
     var blue=$("#blue").slider("value");
     sendCMD($(this).val());
     
-    setTimeout(function fred() {
+    setTimeout(function {
     socket.emit('command', red);
     }, 200);
     
-    setTimeout(function fgreen() {
+    setTimeout(function {
     socket.emit('command', green);
     }, 400);
     
-    setTimeout(function fblue() {
+    setTimeout(function {
     socket.emit('command', blue);
     }, 600);
 });
