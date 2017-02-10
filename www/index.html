@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Paseo</title>
+        <title>PaseoLights</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="jquery-1.10.1.min.js"></script>
@@ -12,7 +12,6 @@
      
         <link rel="stylesheet" type="text/css" href="jquery-ui.css" media = "all"/>
         <link rel="stylesheet" href="farbtastic.css" type="text/css" />
-        <link rel="stylesheet" href="main.css" type="text/css" />
         <style type="text/css">
         
     #red .ui-slider-range,#red .ui-slider-handle{
@@ -93,14 +92,8 @@
 
     </head>
     <body>
-    <div class="browser">
-    <div class="stripe">
-    <div class="containercenter">
-    <img src="paseo.png" alt="Paseo Lights" style="width:650px;height:150px;">
-    </div>
+        <h1>Paseo Lights</h1>
         <br>
-        <br>
-    <div class="containercenter">
         <div id ="sliders">
         <div id="colorpicker"></div>
         <div id="swatch" class="ui-widget-content ui-corner-all">
@@ -111,32 +104,13 @@
         <div id="green"></div>
         <div id="blue"></div>
         </div>
-        <br>
-        <div class="button-border">
+        <div>
             <button type="button" class="click-led" id="led-off" value="0">Turn Off</button>
-        </div>
-        <br>
-        <div class="button-border">
             <button type="button" class="click-led" id="led-sc" value="1">Solid Color</button>
-        </div>
-        <br>
-        <div class="button-border">
             <button type="button" class="click-led" id="led-rainbow" value="2">Rainbow</button>
-        </div>
-        <br>
-        <div class="button-border">
             <button type="button" class="click-led" id="led-lightning" value="3">Random Color Lightning</button>
-        </div>
-        <br>
-        <div class="button-border">
             <button type="button" class="click-led" id="led-tc" value="4">Random Color Theater Chase</button>
-        </div>
-        <br>
-        <div class="button-border">
             <button type="button" class="click-led" id="led-cylon" value="5">Random Color Cylon</button>
-      </div>
-      </div>
-      </div>
-      </div>
+        </div>
     </body>
 </html>
