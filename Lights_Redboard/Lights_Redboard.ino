@@ -1,19 +1,11 @@
 #include <FastLED.h>
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(13, 12); // RX, TX
+SoftwareSerial mySerial(12, 13); // RX, TX
 
 #define NUM_LEDS 60
 #define CLK 2
 #define PLATE 3
-#define D0 4
-#define D1 5
-#define D2 6
-#define D3 7
-#define D4 8
-#define D5 9
-#define D6 10
-#define D7 11
 #define LEDSTRIP 12
 #define LED 13
 
