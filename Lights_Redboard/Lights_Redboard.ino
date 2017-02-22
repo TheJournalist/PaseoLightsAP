@@ -1,13 +1,12 @@
 #include <FastLED.h>
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(12, 13); // RX, TX
+SoftwareSerial mySerial(5, 6); // RX, TX
 
 #define NUM_LEDS 60
 #define CLK 2
 #define PLATE 3
 #define LEDSTRIP 12
-#define LED 13
 
 #define FORWARD 0
 #define BACKWARD 1
@@ -47,7 +46,6 @@ void setup()
     mySerial.begin(115200);
     Serial.println("Iniciado...");
 
-    pinMode(LED, OUTPUT);
     pinMode(PLATE, INPUT);
     
     attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, CHANGE);
