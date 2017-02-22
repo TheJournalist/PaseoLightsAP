@@ -122,9 +122,7 @@ void platePressed()
 void newdata()
 {
     Serial.println();
-    data = (mySerial.read()).toInt();
-    Serial.print("New data: ");
-    Serial.println(data);
+    data = mySerial.read();
 
     if(nparam > 0)
     {
