@@ -122,7 +122,7 @@ void platePressed()
 void newdata()
 {
     Serial.println();
-    data = mySerial.read();
+    data = atoi(mySerial.read());
 
     if(nparam > 0)
     {
