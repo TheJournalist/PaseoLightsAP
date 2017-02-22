@@ -2,7 +2,7 @@
 var sitePath = "www";
 var port = 80;
 
-//"use strict" ;
+"use strict" ;
 // Libraries
 var m = require('mraa');
 var fs = require('fs');
@@ -15,7 +15,7 @@ var Edison = require('edison-io');
 var sys = require('sys')
 var exec = require('child_process').exec;
 var child;
-//var cfg = require("./utl/cfg-app-platform.js")() ; 
+var cfg = require("./utl/cfg-app-platform.js")() ; 
 
 var D0 = new m.Gpio(45); 
 D0.dir(m.DIR_OUT);
@@ -103,7 +103,7 @@ io.on('connection', function(socket) {
     });
     
 });
-/*
+
 // confirm that we have a version of libmraa and Node.js that works
 // prints some interesting platform details to console
 cfg.identify(); 
@@ -129,7 +129,7 @@ var periodicActivity = function() {
     process.stdout.write(time.toLocaleTimeString() + " "); // and to the JavaScript console
 } ;
 var intervalID = setInterval(periodicActivity, 2000);      // start the periodic writes
-*/
+
 // Start server
 console.log(sitePath);
 console.log("Starting server in: " + __dirname + '/' + sitePath);
