@@ -106,7 +106,16 @@ io.on('connection', function(socket) {
 
 // confirm that we have a version of libmraa and Node.js that works
 // prints some interesting platform details to console
-cfg.identify(); 
+
+cfg.identify() ;                // prints some interesting platform details to console
+
+if( !cfg.test() ) {
+    console.log("UART TEST ERROR!!! HU3");
+}
+
+if( !cfg.init() ) {
+    console.log("UART INIT ERROR!!! HU3");
+}
 cfg.io = new cfg.mraa.Uart(cfg.ioPin);         // construct our I/O object
 cfg.ioPath = cfg.io.getDevicePath();           // get path to UART device
 if( typeof cfg.ioPin === "number" && Number.isInteger(cfg.ioPin) ) {
