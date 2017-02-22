@@ -1,4 +1,7 @@
 #include <FastLED.h>
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(12, 13); // RX, TX
 
 #define NUM_LEDS 60
 #define CLK 2
@@ -49,21 +52,12 @@ unsigned long currentMillis;
 void setup() 
 {
     Serial.begin(9600);
+    mySerial.begin(115200);
     Serial.println("Iniciado...");
-    
-    pinMode(D0, INPUT);
-    pinMode(D1, INPUT);
-    pinMode(D2, INPUT);
-    pinMode(D3, INPUT);
-    pinMode(D4, INPUT);
-    pinMode(D5, INPUT);
-    pinMode(D6, INPUT);
-    pinMode(D7, INPUT);
+
     pinMode(LED, OUTPUT);
-    pinMode(CLK, INPUT_PULLUP);
     pinMode(PLATE, INPUT);
     
-    attachInterrupt(digitalPinToInterrupt(CLK), newdata, RISING);
     attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, CHANGE);
 
     FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
@@ -73,6 +67,10 @@ void setup()
 
 void loop() 
 {
+  if (mySerial.available()) {
+    mySerial.read();
+  }
+    
   switch(cmd)
   {
     // Turn all off
@@ -133,15 +131,7 @@ void platePressed()
 
 void newdata()
 {
-    data = 0;
-    data  = digitalRead(D0);
-    data |= digitalRead(D1) << 1;
-    data |= digitalRead(D2) << 2;
-    data |= digitalRead(D3) << 3;
-    data |= digitalRead(D4) << 4;
-    data |= digitalRead(D5) << 5;
-    data |= digitalRead(D6) << 6;
-    data |= digitalRead(D7) << 7;
+    data = mySerial.read();
 
     if(nparam > 0)
     {
