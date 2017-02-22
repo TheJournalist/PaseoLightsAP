@@ -58,7 +58,7 @@ void setup()
 void loop() 
 {
   if (mySerial.available()) {
-    mySerial.read();
+    newdata();
   }
     
   switch(cmd)
@@ -122,6 +122,8 @@ void platePressed()
 void newdata()
 {
     data = mySerial.read();
+    Serial.print("New data: ");
+    Serial.println(data);
 
     if(nparam > 0)
     {
