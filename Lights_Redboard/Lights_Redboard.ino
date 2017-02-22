@@ -1,7 +1,7 @@
 #include <FastLED.h>
 #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(12, 13); // RX, TX
+SoftwareSerial mySerial(13, 12); // RX, TX
 
 #define NUM_LEDS 60
 #define CLK 2
