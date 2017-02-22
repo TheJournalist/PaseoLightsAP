@@ -17,60 +17,9 @@ var exec = require('child_process').exec;
 var child;
 var cfg = require("./utl/cfg-app-platform.js")() ; 
 
-var D0 = new m.Gpio(45); 
-D0.dir(m.DIR_OUT);
-D0.write(0);
-
-var D1 = new m.Gpio(32); 
-D1.dir(m.DIR_OUT);
-D1.write(0);
-
-var D2 = new m.Gpio(46); 
-D2.dir(m.DIR_OUT);
-D2.write(0);
-
-var D3 = new m.Gpio(33); 
-D3.dir(m.DIR_OUT);
-D3.write(0);
-
-var D4 = new m.Gpio(47); 
-D4.dir(m.DIR_OUT);
-D4.write(0);
-
-var D5 = new m.Gpio(48); 
-D5.dir(m.DIR_OUT);
-D5.write(0);
-
-var D6 = new m.Gpio(36); 
-D6.dir(m.DIR_OUT);
-D6.write(0);
-
-var D7 = new m.Gpio(14); 
-D7.dir(m.DIR_OUT);
-D7.write(0);
-
-var CLK = new m.Gpio(31); 
-CLK.dir(m.DIR_OUT);
-CLK.write(0);
-
-function fall()
-{
-  CLK.write(0);
-}
-
 function sendCMD(data)
 {
-  D0.write(data & 0x01);
-  D1.write((data & 0x02) >> 1);
-  D2.write((data & 0x04) >> 2);
-  D3.write((data & 0x08) >> 3);
-  D4.write((data & 0x16) >> 4);
-  D5.write((data & 0x32) >> 5);
-  D6.write((data & 0x64) >> 6);
-  D7.write((data & 0x128) >> 7);
-  
-  CLK.write(1);
-  setTimeout(fall, 100);
+  cfg.io.write(data);
 }
 
 // Create a new Johnny-Five board object
@@ -126,16 +75,9 @@ if( typeof cfg.ioPin === "number" && Number.isInteger(cfg.ioPin) ) {
     console.log("UART device path: " + cfg.ioPath);
 }
 cfg.io.setBaudRate(115200);
-//cfg.io.setBaudRate(1200) ;
 cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
-
-var periodicActivity = function() {
-    cfg.io.writeStr("DAMN CABLES!!! ") ;
-    process.stdout.write("Sent msg! "); // and to the JavaScript console
-} ;
-var intervalID = setInterval(periodicActivity, 2000);      // start the periodic writes
 
 // Start server
 console.log(sitePath);
@@ -144,4 +86,3 @@ app.use(express.static(__dirname + '/' + sitePath));
 http.listen(port, function() {
     console.log("Server running at: http://localhost:" + port);
 });
-//sendCMD(0x04);
