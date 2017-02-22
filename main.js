@@ -2,6 +2,7 @@
 var sitePath = "www";
 var port = 80;
 
+"use strict" ;
 // Libraries
 var m = require('mraa');
 var fs = require('fs');
@@ -14,6 +15,7 @@ var Edison = require('edison-io');
 var sys = require('sys')
 var exec = require('child_process').exec;
 var child;
+var cfg = require("./utl/cfg-app-platform.js")() ; 
 
 var D0 = new m.Gpio(45); 
 D0.dir(m.DIR_OUT);
@@ -101,6 +103,32 @@ io.on('connection', function(socket) {
     });
     
 });
+
+// confirm that we have a version of libmraa and Node.js that works
+// prints some interesting platform details to console
+cfg.identify(); 
+cfg.io = new cfg.mraa.Uart(cfg.ioPin);         // construct our I/O object
+cfg.ioPath = cfg.io.getDevicePath();           // get path to UART device
+if( typeof cfg.ioPin === "number" && Number.isInteger(cfg.ioPin) ) {
+    console.log("UART mraa #: " + cfg.ioPin);
+    console.log("UART" + cfg.ioPin + " device path: " + cfg.ioPath);
+} else {
+    console.log("UART has no mraa #, using: " + cfg.ioPin);
+    console.log("UART device path: " + cfg.ioPath);
+}
+cfg.io.setBaudRate(115200);
+//cfg.io.setBaudRate(1200) ;
+cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
+cfg.io.setFlowcontrol(false, false);
+cfg.io.setTimeout(0, 0, 0);  
+
+var time = new Date();
+var periodicActivity = function() {
+    time.setTime(Date.now());                              // assign current time to our Date object
+    cfg.io.writeStr(time.toLocaleTimeString() + " ");      // write the current time to the UART
+    process.stdout.write(time.toLocaleTimeString() + " "); // and to the JavaScript console
+} ;
+var intervalID = setInterval(periodicActivity, 2000);      // start the periodic writes
 
 // Start server
 console.log(sitePath);
