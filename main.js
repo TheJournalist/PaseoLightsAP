@@ -132,8 +132,8 @@ cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
 
 var periodicActivity = function() {
-    //cfg.io.writeStr("DAMN CABLES!!! ") ;
-    //process.stdout.write("Sent msg! "); // and to the JavaScript console
+    cfg.io.writeStr("DAMN CABLES!!! ") ;
+    process.stdout.write("Sent msg! "); // and to the JavaScript console
 } ;
 var intervalID = setInterval(periodicActivity, 2000);      // start the periodic writes
 
