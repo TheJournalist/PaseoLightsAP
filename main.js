@@ -125,17 +125,15 @@ if( typeof cfg.ioPin === "number" && Number.isInteger(cfg.ioPin) ) {
     console.log("UART has no mraa #, using: " + cfg.ioPin);
     console.log("UART device path: " + cfg.ioPath);
 }
-cfg.io.setBaudRate(115200);
-//cfg.io.setBaudRate(1200) ;
+//cfg.io.setBaudRate(115200);
+cfg.io.setBaudRate(1200) ;
 cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
 
-var time = new Date();
 var periodicActivity = function() {
-    time.setTime(Date.now());                              // assign current time to our Date object
-    cfg.io.writeStr(time.toLocaleTimeString() + " ");      // write the current time to the UART
-    process.stdout.write(time.toLocaleTimeString() + " "); // and to the JavaScript console
+    cfg.io.writeStr("UUUUUUUUUUUUUUUUUUUU ") ;
+    process.stdout.write("Sent UUUUUUU! "); // and to the JavaScript console
 } ;
 var intervalID = setInterval(periodicActivity, 2000);      // start the periodic writes
 
