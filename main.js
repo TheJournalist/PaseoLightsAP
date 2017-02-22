@@ -19,7 +19,7 @@ var cfg = require("./utl/cfg-app-platform.js")() ;
 
 function sendCMD(data)
 {
-  cfg.io.writeStr(data);
+  cfg.io.writeStr(data.toString());
 }
 
 // Create a new Johnny-Five board object
@@ -59,11 +59,11 @@ io.on('connection', function(socket) {
 cfg.identify() ;                // prints some interesting platform details to console
 
 if( !cfg.test() ) {
-    console.log("UART TEST ERROR!!! HU3");
+    console.log("UART TEST ERROR!!!");
 }
 
 if( !cfg.init() ) {
-    console.log("UART INIT ERROR!!! HU3");
+    console.log("UART INIT ERROR!!!");
 }
 cfg.io = new cfg.mraa.Uart(cfg.ioPin);         // construct our I/O object
 cfg.ioPath = cfg.io.getDevicePath();           // get path to UART device
