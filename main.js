@@ -19,7 +19,7 @@ var cfg = require("./utl/cfg-app-platform.js")() ;
 
 function sendCMD(data)
 {
-  cfg.io.write(data);
+  cfg.io.writeStr(data.toString());
 }
 
 // Create a new Johnny-Five board object
