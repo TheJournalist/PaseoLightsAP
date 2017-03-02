@@ -37,15 +37,31 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Date
+function getDateTime() {
+    var date = new Date();
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+    return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+}
+
 // Create a handler for when a client connects via socket.io
 io.on('connection', function(socket) {
     var clientIP = socket.client.conn.remoteAddress;
   
-    socket.on('command', function(command) {
-        console.log(clientIP + ": COMANDO " + command);
-        cfg.io.writeStr(String.fromCharCode(command));
+    socket.on('command', function(command, p1, p2, p3) {
+        console.log(getDateTime() + " - " + clientIP + " - cmd: " + command.toString('hex') + " p1: " + p1.toString('hex') + " p2: " + p2.toString('hex') + " p3: " + p3.toString('hex'));
+        cfg.io.writeStr(String.fromCharCode(command, p1, p2, p3));
     });
-    
 });
 
 // confirm that we have a version of libmraa and Node.js that works
@@ -69,7 +85,7 @@ if( typeof cfg.ioPin === "number" && Number.isInteger(cfg.ioPin) ) {
     console.log("UART has no mraa #, using: " + cfg.ioPin);
     console.log("UART device path: " + cfg.ioPath);
 }
-cfg.io.setBaudRate(115200);
+cfg.io.setBaudRate(9600);
 cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
