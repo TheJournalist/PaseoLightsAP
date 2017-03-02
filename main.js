@@ -17,11 +17,6 @@ var exec = require('child_process').exec;
 var child;
 var cfg = require("./utl/cfg-app-platform.js")() ; 
 
-function sendCMD(data)
-{
-  cfg.io.writeStr(data.toString());
-}
-
 // Create a new Johnny-Five board object
 var board = new five.Board({
     io: new Edison()
@@ -48,7 +43,7 @@ io.on('connection', function(socket) {
   
     socket.on('command', function(command) {
         console.log(clientIP + ": COMANDO " + command);
-        sendCMD(command);
+        cfg.io.writeStr(String.fromCharCode(command));
     });
     
 });
