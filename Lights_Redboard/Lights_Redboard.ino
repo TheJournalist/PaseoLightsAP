@@ -43,7 +43,7 @@ unsigned long currentMillis;
 void setup() 
 {
     Serial.begin(9600);
-    mySerial.begin(115200);
+    mySerial.begin(9600);
     Serial.println("Iniciado...");
 
     pinMode(PLATE, INPUT);
@@ -127,7 +127,7 @@ void newdata()
     if(nparam > 0)
     {
       Serial.print("Novo parametro ");
-      Serial.print(nparam);
+      Serial.print(3 - nparam);
       Serial.print(": ");
       Serial.println(data, HEX);
       param[3 - nparam] = data;
