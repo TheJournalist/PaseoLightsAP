@@ -58,9 +58,9 @@ function getDateTime() {
 io.on('connection', function(socket) {
     var clientIP = socket.client.conn.remoteAddress;
   
-    socket.on('command', function(command, p1, p2, p3) {
-        console.log(getDateTime() + " - " + clientIP + " - cmd: " + command + " p1: " + p1 + " p2: " + p2 + " p3: " + p3);
-        cfg.io.writeStr(String.fromCharCode(command, p1, p2, p3));
+    socket.on('command', function(command) {
+        console.log(getDateTime() + " - " + clientIP + " - cmd: " + command);
+        cfg.io.writeStr(String.fromCharCode(command));
     });
 });
 
