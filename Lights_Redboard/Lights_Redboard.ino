@@ -103,6 +103,23 @@ void loop()
   }
 }
 
+int nonBlocking()
+{
+    previousMillis = millis(); 
+    currentMillis = millis(); 
+      while(1)
+      {
+        currentMillis = millis();
+        if(currentMillis - previousMillis > speed)
+          return 0;
+        if(thisCmd != cmd)
+          return 1;
+        if(mySerial.available())
+          return 1;
+      }
+    }
+}
+
 void platePressed()
 {
   platepr = !platepr;
@@ -188,18 +205,8 @@ void rainbow(int cycles, int speed)
       }
       FastLED.show();
 
-      previousMillis = millis(); 
-      currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          break;
-        if(thisCmd != cmd)
+      if(nonBlocking())
           return;
-      }
-      
-    }
   }
 }
 
@@ -219,32 +226,16 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed)
     }
     FastLED.show();
 
-    previousMillis = millis(); 
-      currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          break;
-        if(thisCmd != cmd)
+     if(nonBlocking())
           return;
-      }
     
     for(int s=0; s<simultaneous; s++)
     {
       leds[flashes[s]] = CRGB::Black;
     }
     
-    previousMillis = millis(); 
-      currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          break;
-        if(thisCmd != cmd)
+     if(nonBlocking())
           return;
-      }
   }
 }
 
@@ -259,16 +250,8 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
       }
       FastLED.show();
 
-      previousMillis = millis(); 
-      currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          break;
-        if(thisCmd != cmd)
+       if(nonBlocking())
           return;
-      }
 
       for (int i=0; i < NUM_LEDS; i=i+3) {
         leds[i+q] = CRGB::Black;        //turn every third pixel off
@@ -293,16 +276,8 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
     
-    previousMillis = millis(); 
-    currentMillis = millis(); 
-    while(1)
-    {
-      currentMillis = millis();
-      if(currentMillis - previousMillis > speed)
-        break;
-      if(thisCmd != cmd)
-        return;
-    }
+     if(nonBlocking())
+          return;
   }
 
   // Now go in the other direction.  
@@ -315,16 +290,8 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
 
-    previousMillis = millis(); 
-      currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          break;
-        if(thisCmd != cmd)
+       if(nonBlocking())
           return;
-      }
   }
 }
 
