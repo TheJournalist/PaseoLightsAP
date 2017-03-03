@@ -117,7 +117,6 @@ int nonBlocking()
         if(mySerial.available())
           return 1;
       }
-    }
 }
 
 void platePressed()
