@@ -59,7 +59,7 @@ io.on('connection', function(socket) {
     var clientIP = socket.client.conn.remoteAddress;
   
     socket.on('command', function(command, p1, p2, p3) {
-        console.log(getDateTime() + " - " + clientIP + " - cmd: " + command.toString('hex') + " p1: " + p1.toString('hex') + " p2: " + p2.toString('hex') + " p3: " + p3.toString('hex'));
+        console.log(getDateTime() + " - " + clientIP + " - cmd: " + command + " p1: " + p1 + " p2: " + p2 + " p3: " + p3);
         cfg.io.writeStr(String.fromCharCode(command, p1, p2, p3));
     });
 });
