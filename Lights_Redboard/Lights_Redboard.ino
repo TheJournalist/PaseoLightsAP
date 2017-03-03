@@ -30,11 +30,7 @@ CRGB randomColor();
 boolean direction = FORWARD;
 CRGB leds[NUM_LEDS];
 byte cmd = 0;
-byte newcmd = 0;
 byte oldcmd = 0;
-byte data = 0;
-byte param[3] = {0,0,0};
-int nparam = 0;
 bool platepr = false;
 
 long previousMillis = 0;  
@@ -122,26 +118,9 @@ void platePressed()
 void newdata()
 {
     Serial.println();
-    data = mySerial.read();
-
-    if(nparam > 0)
-    {
-      Serial.print("Novo parametro ");
-      Serial.print(3 - nparam);
-      Serial.print(": ");
-      Serial.println(data, HEX);
-      param[3 - nparam] = data;
-      nparam--;
-      if(nparam == 0)
-        cmd = newcmd;
-    }
-    else
-    {
-      newcmd = data;
-      nparam = 3;
-      Serial.print("Novo comando: ");
-      Serial.println(data, HEX);
-    } 
+    cmd = mySerial.read();
+    Serial.print("Novo comando: ");
+    Serial.println(data, HEX);
 }
 
 // Changes all LEDS to given color
@@ -170,11 +149,10 @@ void turnAllOff()
 // Solid RGB
 void solidRGB()
 {
+  CRGB c = randomColor();
   for(int i=0; i<NUM_LEDS; i++)
   {
-    leds[i].red   = param[0];
-    leds[i].green = param[1];
-    leds[i].blue  = param[2];
+    leds[i] = c;
   }
   FastLED.show();
 }
@@ -182,14 +160,13 @@ void solidRGB()
 // Wipes color from end to end
 void colorWipe()
 {
+  CRGB c = randomColor();
   for(int i=0; i<NUM_LEDS; i++)
   {
-    leds[i].red   = param[0];
-    leds[i].green = param[1];
-    leds[i].blue  = param[2];
+    leds[i] = c;
    }
    FastLED.show();
-   delay(param[3]+1);
+   delay(10);
 }
 
 
