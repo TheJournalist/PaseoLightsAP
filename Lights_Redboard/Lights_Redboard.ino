@@ -120,7 +120,7 @@ void newdata()
     Serial.println();
     cmd = mySerial.read();
     Serial.print("Novo comando: ");
-    Serial.println(data, HEX);
+    Serial.println(cmd, HEX);
 }
 
 // Changes all LEDS to given color
