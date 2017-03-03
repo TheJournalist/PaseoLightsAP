@@ -103,7 +103,7 @@ void loop()
   }
 }
 
-int nonBlocking()
+int nonBlocking(int speed)
 {
     previousMillis = millis(); 
     currentMillis = millis(); 
@@ -204,7 +204,7 @@ void rainbow(int cycles, int speed)
       }
       FastLED.show();
 
-      if(nonBlocking())
+      if(nonBlocking(speed))
           return;
   }
 }
@@ -233,7 +233,7 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed)
       leds[flashes[s]] = CRGB::Black;
     }
     
-     if(nonBlocking())
+     if(nonBlocking(speed))
           return;
   }
 }
@@ -249,7 +249,7 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
       }
       FastLED.show();
 
-       if(nonBlocking())
+       if(nonBlocking(speed))
           return;
 
       for (int i=0; i < NUM_LEDS; i=i+3) {
@@ -275,7 +275,7 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
     
-     if(nonBlocking())
+     if(nonBlocking(speed))
           return;
   }
 
@@ -289,7 +289,7 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
 
-       if(nonBlocking())
+       if(nonBlocking(speed))
           return;
   }
 }
