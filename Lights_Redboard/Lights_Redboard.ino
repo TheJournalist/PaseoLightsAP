@@ -53,8 +53,12 @@ void setup()
 
 void loop() 
 {
-  if (mySerial.available()) {
-    newdata();
+  if (mySerial.available()) 
+  {
+    Serial.println();
+    cmd = mySerial.read();
+    Serial.print("Novo comando: ");
+    Serial.println(cmd, HEX);
   }
     
   switch(cmd)
@@ -113,14 +117,6 @@ void platePressed()
     cmd = oldcmd;
   }
  
-}
-
-void newdata()
-{
-    Serial.println();
-    cmd = mySerial.read();
-    Serial.print("Novo comando: ");
-    Serial.println(cmd, HEX);
 }
 
 // Changes all LEDS to given color
