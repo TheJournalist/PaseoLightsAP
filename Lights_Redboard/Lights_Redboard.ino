@@ -1,19 +1,31 @@
+#include <HX711.h>
 #include <FastLED.h>
 #include <SoftwareSerial.h>
 
+// Edison Serial
 SoftwareSerial mySerial(5, 6); // RX, TX
 
+// LED Strip parameters
 #define NUM_LEDS 60
-#define CLK 2
-#define PLATE 3
 #define LEDSTRIP 12
-
 #define FORWARD 0
 #define BACKWARD 1
 #define SLOW 250
 #define MEDIUM 50
 #define FAST 5
+boolean direction = FORWARD;
+CRGB leds[NUM_LEDS];
 
+// Load Cell / HX711
+#define calibration_factor -7050.0
+#define DOUT  3
+#define CLK  2
+HX711 scale(DOUT, CLK);
+unsigned long lastPressedMillis = 0;
+unsigned long currentPressedMillis;
+bool platepr = false;
+
+// Function prototypes
 void allColor(CRGB c);
 void allRandom();
 void turnAllOff();
@@ -27,40 +39,66 @@ void middleOut();
 CRGB Wheel(byte WheelPos);
 CRGB randomColor();
 
-boolean direction = FORWARD;
-CRGB leds[NUM_LEDS];
+// Command management
 byte cmd = 0;
 byte oldcmd = 0;
-bool platepr = false;
-
 long previousMillis = 0;  
 unsigned long currentMillis;
 
+// Initialization code
 void setup() 
 {
-    Serial.begin(9600);
-    mySerial.begin(9600);
-    Serial.println("Iniciado...");
+  // Debug
+  Serial.begin(9600);
+  Serial.println("Starting...");
 
-    pinMode(PLATE, INPUT);
-    
-    attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, CHANGE);
+  // Edison Serial
+  mySerial.begin(9600);
+   
+  //pinMode(PLATE, INPUT);
+  //attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, CHANGE);
 
-    FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
+  // Led strip
+  FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
 
-    randomSeed(analogRead(0));
+  // Random generator
+  randomSeed(analogRead(0));
+
+  // HX711 / Load Cell 
+  scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
+  scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
 }
 
+
+// Main code loop
 void loop() 
 {
-  if (mySerial.available()) 
+  // Edison Serial
+  if (mySerial.available())  // If message was received
   {
-    Serial.println();
+    // New command received
     cmd = mySerial.read();
+
+    // Debug
+    Serial.println();
     Serial.print("Novo comando: ");
     Serial.println(cmd, HEX);
   }
-    
+
+  // Weight on load cell
+  if(scale.get_units() > 20.0)
+  {
+    // If some time has passed since the last press...
+    currentPressedMillis = millis(); 
+    if(currentPressedMillis - previousMillis > 500)
+    {
+      // Plate pressed!
+      platePressed();
+      previousMillis = currentPressedMillis;
+    }
+  }
+
+  // LED Commands
   switch(cmd)
   {
     // Turn all off
@@ -83,20 +121,17 @@ void loop()
       lightning(NULL, 20,50,MEDIUM);
       break;
 
-    // Theater Chase
+    // Theater Chase (Random color)
     case 4:
       theaterChase(randomColor(),10,SLOW);
       break;
 
-    // Cylon
+    // Cylon (Random color)
     case 5:
       cylon(randomColor(), 10,FAST);
       break;
-
-    case 6:
-      middleOut();
-    break;
-    
+      
+    // None of the above
     default:
       turnAllOff();
       break;
@@ -107,25 +142,32 @@ int nonBlocking(int speed, int thisCmd)
 {
     previousMillis = millis(); 
     currentMillis = millis(); 
-      while(1)
-      {
-        currentMillis = millis();
-        if(currentMillis - previousMillis > speed)
-          return 0;
-        if(thisCmd != cmd)
-          return 1;
-        if(mySerial.available())
-          return 1;
-      }
+    while(1)
+    {
+      // Delay
+      currentMillis = millis();
+      if(currentMillis - previousMillis > speed)
+        return 0;
+
+      // Stop delay if command has changed
+      if(thisCmd != cmd)
+        return 1;
+
+      // Stop delay if new message has been received
+      if(mySerial.available())
+        return 1;
+    }
 }
 
 void platePressed()
 {
+  // Toggle
   platepr = !platepr;
   if(platepr)
   {
     oldcmd = cmd;
-     ///cmd = 6;
+
+    // Switch to rainbow
     cmd = 2;
   }
   else
@@ -136,17 +178,17 @@ void platePressed()
 }
 
 // Changes all LEDS to given color
-void allColor(CRGB c){
-  for(int i=0; i<NUM_LEDS; i++){
+void allColor(CRGB c)
+{
+  for(int i=0; i<NUM_LEDS; i++)
     leds[i] = c;
-  }
   FastLED.show();
 }
 
-void allRandom(){
-  for(int i=0; i<NUM_LEDS; i++){
+void allRandom()
+{
+  for(int i=0; i<NUM_LEDS; i++)
     leds[i] = randomColor();
-  }
   FastLED.show(); 
 }
 
@@ -176,9 +218,9 @@ void colorWipe()
   for(int i=0; i<NUM_LEDS; i++)
   {
     leds[i] = c;
-   }
-   FastLED.show();
-   delay(10);
+  }
+  FastLED.show();
+  delay(10);
 }
 
 
@@ -295,11 +337,6 @@ void cylon(CRGB c, int width, int speed){
   }
 }
 
-void middleOut()
-{
-
-}
-
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
 CRGB Wheel(byte WheelPos) {
@@ -319,4 +356,3 @@ CRGB Wheel(byte WheelPos) {
 CRGB randomColor(){
   return Wheel(random(256)); 
 }
-
