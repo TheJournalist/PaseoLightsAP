@@ -26,16 +26,17 @@ unsigned long currentPressedMillis;
 bool platepr = false;
 
 // Function prototypes
+void checkPlate();
 void allColor(CRGB c);
 void allRandom();
 void turnAllOff();
 void solidRGB();
 void colorWipe();
+int nonBlocking(int speed, int thisCmd);
 void rainbow(int cycles, int speed);
 void lightning(CRGB c, int simultaneous, int cycles, int speed);
 void theaterChase(CRGB c, int cycles, int speed);
 void cylon(CRGB c, int width, int speed);
-void middleOut();
 CRGB Wheel(byte WheelPos);
 CRGB randomColor();
 
@@ -81,22 +82,12 @@ void loop()
 
     // Debug
     Serial.println();
-    Serial.print("Novo comando: ");
+    Serial.print("New CMD: ");
     Serial.println(cmd, HEX);
   }
 
-  // Weight on load cell
-  if(scale.get_units() > 20.0)
-  {
-    // If some time has passed since the last press...
-    currentPressedMillis = millis(); 
-    if(currentPressedMillis - previousMillis > 500)
-    {
-      // Plate pressed!
-      platePressed();
-      previousMillis = currentPressedMillis;
-    }
-  }
+  // Check plate press
+  checkPlate();  
 
   // LED Commands
   switch(cmd)
@@ -138,6 +129,23 @@ void loop()
   }
 }
 
+void checkPlate()
+{
+  // Weight on load cell
+  if(scale.get_units() > 20.0)
+  {
+    // If some time has passed since the last press...
+    currentPressedMillis = millis(); 
+    if(currentPressedMillis - lastPressedMillis > 500)
+    {
+      // Plate pressed!
+      Serial.println("Plate pressed!");
+      platePressed();
+      lastPressedMillis = currentPressedMillis;
+    }
+  }
+}
+
 int nonBlocking(int speed, int thisCmd)
 {
     previousMillis = millis(); 
@@ -156,6 +164,9 @@ int nonBlocking(int speed, int thisCmd)
       // Stop delay if new message has been received
       if(mySerial.available())
         return 1;
+      
+      // Check plate press
+      checkPlate();  
     }
 }
 
