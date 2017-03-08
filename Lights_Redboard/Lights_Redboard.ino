@@ -25,6 +25,7 @@ unsigned long lastPressedMillis = 0;
 unsigned long currentPressedMillis;
 bool platepr = false;
 float w = 0.0;
+int count = 0;
 
 // Function prototypes
 void checkPlate();
@@ -83,8 +84,9 @@ void loop()
 
     // Debug
     Serial.println();
-    Serial.print("New CMD: ");
-    Serial.println(cmd, HEX);
+    Serial.print("####### New CMD: ");
+    Serial.print(cmd, HEX);
+    Serial.println(" #########");
   }
 
   // Check plate press
@@ -133,9 +135,14 @@ void loop()
 void checkPlate()
 {
   // Weight on load cell
-  w = scale.get_units();
-  Serial.print("Weight: ");
-  Serial.println(w);
+  if(count++ > 15)
+  {
+    count = 0;
+    w = scale.get_units();
+    Serial.print("Weight: ");
+    Serial.println(w);
+  }
+  
   if(w < -20.0)
   {
     
