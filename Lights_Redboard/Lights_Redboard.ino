@@ -24,6 +24,7 @@ HX711 scale(DOUT, CLK);
 unsigned long lastPressedMillis = 0;
 unsigned long currentPressedMillis;
 bool platepr = false;
+float w = 0.0;
 
 // Function prototypes
 void checkPlate();
@@ -132,17 +133,24 @@ void loop()
 void checkPlate()
 {
   // Weight on load cell
-  if(scale.get_units() > -20.0)
+  w = scale.get_units();
+  Serial.println(w);
+  if(w > -20.0)
   {
+    
     // If some time has passed since the last press...
     currentPressedMillis = millis(); 
     if((platepr == false) && (currentPressedMillis - lastPressedMillis > 500))
     {
       // Plate pressed!
-      Serial.println("Plate pressed!");
+      Serial.println("########## Plate pressed! #########");
+      Serial.print("Old cmd: ");
+      Serial.println(cmd);
       oldcmd = cmd;
       // Switch to rainbow
       cmd = 2;
+      Serial.print("New cmd: ");
+      Serial.println(cmd);
       platepr = true;
     }      
     lastPressedMillis = currentPressedMillis;
@@ -151,6 +159,7 @@ void checkPlate()
   {
     platepr = false;
     cmd = oldcmd;
+    Serial.println("########## Plate not pressed! #########");
   }
 }
 
