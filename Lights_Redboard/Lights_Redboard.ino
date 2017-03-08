@@ -135,7 +135,8 @@ void loop()
 void checkPlate()
 {
   // Weight on load cell
-  if(count++ > 15)
+  count++;
+  if(((cmd != 0) && (count > 700)) || (cmd == 0) && (count > 50))
   {
     count = 0;
     w = scale.get_units();
