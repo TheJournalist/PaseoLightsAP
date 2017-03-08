@@ -134,8 +134,9 @@ void checkPlate()
 {
   // Weight on load cell
   w = scale.get_units();
+  Serial.print("Weight: ");
   Serial.println(w);
-  if(w > -20.0)
+  if(w < -20.0)
   {
     
     // If some time has passed since the last press...
@@ -157,9 +158,12 @@ void checkPlate()
   }
   else
   {
-    platepr = false;
-    cmd = oldcmd;
-    Serial.println("########## Plate not pressed! #########");
+    if(platepr == true)
+    {
+      platepr = false;
+      cmd = oldcmd;
+      Serial.println("########## Plate unpressed! #########");
+    }
   }
 }
 
