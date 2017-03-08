@@ -132,24 +132,32 @@ void loop()
 void checkPlate()
 {
   // Weight on load cell
-  if(scale.get_units() > 20.0)
+  if(scale.get_units() > -20.0)
   {
     // If some time has passed since the last press...
     currentPressedMillis = millis(); 
-    if(currentPressedMillis - lastPressedMillis > 500)
+    if((platepr == false) && (currentPressedMillis - lastPressedMillis > 500))
     {
       // Plate pressed!
       Serial.println("Plate pressed!");
-      platePressed();
-      lastPressedMillis = currentPressedMillis;
-    }
+      oldcmd = cmd;
+      // Switch to rainbow
+      cmd = 2;
+      platepr = true;
+    }      
+    lastPressedMillis = currentPressedMillis;
+  }
+  else
+  {
+    platepr = false;
+    cmd = oldcmd;
   }
 }
 
 int nonBlocking(int speed, int thisCmd)
 {
     previousMillis = millis(); 
-    currentMillis = millis(); 
+    currentMillis = previousMillis; 
     while(1)
     {
       // Delay
@@ -168,24 +176,6 @@ int nonBlocking(int speed, int thisCmd)
       // Check plate press
       checkPlate();  
     }
-}
-
-void platePressed()
-{
-  // Toggle
-  platepr = !platepr;
-  if(platepr)
-  {
-    oldcmd = cmd;
-
-    // Switch to rainbow
-    cmd = 2;
-  }
-  else
-  {
-    cmd = oldcmd;
-  }
- 
 }
 
 // Changes all LEDS to given color
