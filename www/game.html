@@ -29,6 +29,14 @@
 									<li>Game</button></a></li>
 								</ul>
 							</section>
+								<section>
+								
+								<h3>High Scores</h3>
+
+								<div id="id01"></div>
+
+
+							</section>
 							
 						</div>
 				</section>
@@ -50,7 +58,31 @@
         	<script src="js/index.js"></script>
         	<script src="js/jquery.min.js" type="text/javascript"></script>
         	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
-        	
+        	<div id="id01"></div>
+
+<script>
+var xmlhttp = new XMLHttpRequest();
+var url = "../highscores.json";
+
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myArr = JSON.parse(this.responseText);
+        myFunction(myArr);
+    }
+};
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+function myFunction(arr) {
+    var out = "";
+    var i;
+    for(i = 0; i < arr.length; i++) {
+        out += '<a href="' + arr[i].url + '">' + 
+        arr[i].display + '</a><br>';
+    }
+    document.getElementById("id01").innerHTML = out;
+}
+</script>
 
 	</body>
 </html>
