@@ -72,7 +72,7 @@ uint8_t gHue = 0;
 
 bool navi = false;
 int dest = 0;
-int currentPos = -1;
+int currentPos = -2;
 CRGB rc;
 
 void setup() 
@@ -99,7 +99,7 @@ void loop()
   {
     // New command received
     cmd = mySerial.read();
-    currentPos = -1;
+    currentPos = -2;
     wipe();
     
     // Debug
@@ -242,7 +242,7 @@ void rainbowing()
         for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
         {
           if(currentPos != dest)
-            real_leds[j] = CRGB::Orange;
+            real_leds[j] = CRGB::Red;
           else
             real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
         }
