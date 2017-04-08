@@ -151,12 +151,14 @@ void loop()
     } */
     rc = randomColor();
   }
-
+  
   updatePlateState();
 
   if(millis() - lastUpdate > patternInterval) 
     updatePattern(cmd);
 
+  if(cmd == 12)
+    cmd = 2;
 }
 
 void updatePattern(int cmd)
@@ -206,10 +208,9 @@ void updatePattern(int cmd)
         break;
     case 12:
         game();
-        Serial.print("GAME ENDED\n");
         while(mySerial.available()) 
           byte nope = mySerial.read();
-        cmd = 2;cmd = 2;cmd = 2;
+        Serial.print("GAME ENDED\n");
         wipe(); 
         break;
     default:
