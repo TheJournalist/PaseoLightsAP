@@ -212,13 +212,17 @@ void updatePattern(int cmd)
         wipe();
         break;
   } 
+  
+  if(cmd == 12)
+    cmd = 2;
+  
   rainbowing();
 }
 
 void game()
 {
   // 63542178
-  int path[8] = {6,3,5,4,2,1,7,8};
+  int path[8] = {5,2,4,3,1,0,6,7};
   unsigned long startTime = millis();
   bool timeout = false;
   
@@ -248,7 +252,6 @@ void game()
   Serial.print("Tempo(ms): ");
   Serial.print(endTime);
   Serial.print("\n");
-  cmd = 2;
 }
 
 void rainbowing()
