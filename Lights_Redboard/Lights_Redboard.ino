@@ -207,20 +207,16 @@ void updatePattern(int cmd)
     case 12:
         game();
         Serial.print("GAME ENDED\n");
+        while(mySerial.available()) 
+          byte nope = mySerial.read();
+        cmd = 2;cmd = 2;cmd = 2;
+        wipe(); 
         break;
     default:
         navi = false;
         currentPos = -1;
         wipe();
         break;
-  } 
-
-  if(cmd == 12)
-  {
-    while(mySerial.available())
-        int whatever = mySerial.read();
-    cmd = 2;
-    wipe();  
   }
   
   rainbowing();
