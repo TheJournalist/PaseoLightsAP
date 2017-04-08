@@ -172,7 +172,8 @@ setInterval(function(){
     if(cfg.io.dataAvailable(0))
     {
         var data = cfg.io.readStr(1);
-        console.log(" Pressure plate pressed: " + data);
+        var n = data.charCodeAt(0);
+        console.log(" Pressure plate pressed: " + n.toString());
     }
 }, 200);
 
