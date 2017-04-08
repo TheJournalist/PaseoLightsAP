@@ -43,17 +43,17 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/light.html', function (req, res) {
-  res.sendFile(__dirname + '/www/light.html');
-});
+//app.get('/light.html', function (req, res) {
+//  res.sendFile(__dirname + '/www/light.html');
+//});
 
-app.get('/game.html', function (req, res) {
-  res.sendFile(__dirname + '/www/game.html');
-});
+//app.get('/game.html', function (req, res) {
+//  res.sendFile(__dirname + '/www/game.html');
+//});
 
-app.get('/navi.html', function (req, res) {
-  res.sendFile(__dirname + '/www/navi.html');
-});
+//app.get('/navi.html', function (req, res) {
+//  res.sendFile(__dirname + '/www/navi.html');
+//});
 
 // Date
 function getDateTime() {
