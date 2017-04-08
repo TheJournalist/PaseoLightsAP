@@ -359,23 +359,23 @@ void updatePlateState()
         {
           if(currentPos == -1)
           {
-            mySerial.print("Initial position: Plate ");
-            mySerial.print(i);
-            mySerial.print("\n");
+            Serial.print("Initial position: Plate ");
+            Serial.print(i);
+            Serial.print("\n");
             currentPos = i;
           }
           else if((currentPos > dest) && (i == currentPos-1))
           {
-            mySerial.print("Current position: Plate ");
-            mySerial.print(i);
-            mySerial.print("\n");
+            Serial.print("Current position: Plate ");
+            Serial.print(i);
+            Serial.print("\n");
             currentPos = i;
           }
           else if((currentPos < dest) && (i == currentPos+1))
           {
-            mySerial.print("Current position: Plate ");
-            mySerial.print(i);
-            mySerial.print("\n");
+            Serial.print("Current position: Plate ");
+            Serial.print(i);
+            Serial.print("\n");
             currentPos = i;
           }
 
