@@ -220,16 +220,28 @@ void game()
   // 63542178
   int path[8] = {6,3,5,4,2,1,7,8};
   unsigned long startTime = millis();
+  bool timeout = false;
+  
   Serial.print("Game started!");
   for(int i = 0; i<8; i++)
   {
     for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
       real_leds[j] = CRGB::LightBlue;
       
-    while(digitalState(pressure_plates[i].platePin) == 1){}
-    
+    while(digitalState(pressure_plates[i].platePin) == 1)
+    {
+      if(millis() - startTime > 60000)
+      {
+        timeout = true;
+        break;
+      }
+    }
+
     for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
       real_leds[j] = CRGB::Black;
+
+    if(timeout)
+      break;
   }
   unsigned long endTime = millis() - startTime;
   Serial.print("Tempo(ms): ");
