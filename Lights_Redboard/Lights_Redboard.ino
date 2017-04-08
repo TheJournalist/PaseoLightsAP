@@ -211,9 +211,7 @@ void updatePattern(int cmd)
         break;
     case 12:
         game();
-        wipe();
-        cmd = 2;
-        return;
+        Serial.print("GAME ENDED\n")
         break;
     default:
         navi = false;
@@ -221,6 +219,14 @@ void updatePattern(int cmd)
         wipe();
         break;
   } 
+
+  Serial.print("OUT OF SWITCH\n")
+  if(cmd == 12)
+  {
+    Serial.print("NEW CMD\n")
+    cmd = 2;
+    wipe();  
+  }
   
   rainbowing();
 }
@@ -234,7 +240,7 @@ void game()
   for(int i = 0; i<NUM_LEDS; i++)
     real_leds[i] = CRGB::Black;
   
-  Serial.print("Game started!");
+  Serial.print("Game started!\n");
   for(int i = 0; i<8; i++)
   {
     for(int j = ledStrips[path[i]].startLed; j<ledStrips[path[i]].endLed; j++)
@@ -245,7 +251,7 @@ void game()
     {
       if(millis() - startTime > 60000)
       {
-        Serial.print("TIMEOUT");
+        Serial.print("TIMEOUT\n");
         return;
       }
     }
