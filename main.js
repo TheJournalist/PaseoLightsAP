@@ -1,7 +1,7 @@
 // Parameters
 var sitePath = "www";
 var port = 80;
-var highscoresFile = "highscores.json"
+var highscoresFile = "www/highscores.json"
 
 "use strict" ;
 // Libraries
