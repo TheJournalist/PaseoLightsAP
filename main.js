@@ -94,31 +94,31 @@ io.on('connection', function(socket) {
     });
     
     // If we get initials back, store them with the high scores
-    socket.on('initialsScore', function(msg) {
-        console.log(msg.initials + ": " + msg.score);
+    socket.on('initials', function(msg) {
+        console.log(msg + ": " + lastScore);
         
         // Check for top score
-        if (msg.score > scoreContent.highscores[0].score) {
+        if (lastScore > scoreContent.highscores[0].score) {
             scoreContent.highscores.splice(0, 0, {
-                        "initials": msg.initials, 
-                        "score": msg.score
+                        "initials": msg, 
+                        "score": lastScore
             });
             scoreContent.highscores.splice(-1, 1);
             
         // Check for other placement in high scores
         } else {
             for (var i = scoreContent.highscores.length - 1; i >= 0; i--) {
-                if ((msg.score <= scoreContent.highscores[i].score) || 
+                if ((lastScore <= scoreContent.highscores[i].score) || 
                     (i === 0)) {
                     if (i === scoreContent.highscores.length - 1) {
                         scoreContent.highscores.push({
-                            "initials": msg.initials, 
-                            "score": msg.score
+                            "initials": msg, 
+                            "score": lastScore
                         });
                     } else {
                         scoreContent.highscores.splice(i + 1, 0, {
-                            "initials": msg.initials, 
-                            "score": msg.score
+                            "initials": msg, 
+                            "score": lastScore
                         });
                     }
                     console.log(scoreContent.highscores);
@@ -167,15 +167,18 @@ cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
 
+var lastScore;
 
 setInterval(function(){
-    if(cfg.io.dataAvailable(0))
+    var len = cfg.io.dataAvailable(0);
+    if(len)
     {
-        var data = cfg.io.readStr(1);
-        var n = data.charCodeAt(0);
-        console.log(" Pressure plate pressed: " + n.toString());
+        var data = cfg.io.readStr(len);
+        lastScore = data;
+        socket.emit('initialsRequest', '');
+        console.log(" Game score: " + data);
     }
-}, 200);
+}, 100);
 
 // Start server
 console.log(sitePath);
@@ -185,3 +188,9 @@ http.listen(port, function() {
     console.log("Server running at: http://localhost:" + port);
 });
 
+
+
+port.on('data', (data) => {
+  lastScore = data.toString();
+  console.log(data.toString());
+});
