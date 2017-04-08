@@ -1,79 +1,93 @@
-#include <HX711.h>
-#include <FastLED.h>
+#include "FastLED.h"
 #include <SoftwareSerial.h>
+
+#define portOfPin(P)\
+  (((P)>=0&&(P)<8)?&PORTD:(((P)>7&&(P)<14)?&PORTB:&PORTC))
+#define ddrOfPin(P)\
+  (((P)>=0&&(P)<8)?&DDRD:(((P)>7&&(P)<14)?&DDRB:&DDRC))
+#define pinOfPin(P)\
+  (((P)>=0&&(P)<8)?&PIND:(((P)>7&&(P)<14)?&PINB:&PINC))
+#define pinIndex(P)((uint8_t)(P>13?P-14:P&7))
+#define pinMask(P)((uint8_t)(1<<pinIndex(P)))
+
+#define pinAsInput(P) *(ddrOfPin(P))&=~pinMask(P)
+#define pinAsInputPullUp(P) *(ddrOfPin(P))&=~pinMask(P);digitalHigh(P)
+#define pinAsOutput(P) *(ddrOfPin(P))|=pinMask(P)
+#define digitalLow(P) *(portOfPin(P))&=~pinMask(P)
+#define digitalHigh(P) *(portOfPin(P))|=pinMask(P)
+#define isHigh(P)((*(pinOfPin(P))& pinMask(P))>0)
+#define isLow(P)((*(pinOfPin(P))& pinMask(P))==0)
+#define digitalState(P)((uint8_t)isHigh(P))
+
+#define LEDSTRIP   12 // pin connected to the NeoPixels strip
+#define NUM_LEDS   180 // number of LEDs on strip
+
+// Ledstrip
+CRGB leds[NUM_LEDS];
+CRGB rainbow_leds[25];
+CRGB real_leds[NUM_LEDS];
 
 // Edison Serial
 SoftwareSerial mySerial(5, 6); // RX, TX
 
-// LED Strip parameters
-#define NUM_LEDS 60
-#define LEDSTRIP 12
-#define FORWARD 0
-#define BACKWARD 1
-#define SLOW 250
-#define MEDIUM 50
-#define FAST 5
-boolean direction = FORWARD;
-CRGB leds[NUM_LEDS];
+unsigned long patternInterval = 20 ; // time between steps in the pattern
+unsigned long lastUpdate = 0 ; // for millis() when last update occoured
+unsigned long intervals [] = { 20, 20, 50, 100 } ; // speed for each pattern
 
-// Load Cell / HX711
-#define calibration_factor -7050.0
-#define DOUT  3
-#define CLK  2
-HX711 scale(DOUT, CLK);
-unsigned long lastPressedMillis = 0;
-unsigned long currentPressedMillis;
-bool platepr = false;
-float w = 0.0;
-int count = 0;
+typedef struct
+{
+  int platePin;
+  bool platePressed = false;  
+} Plate;
+Plate pressure_plates[8];
+int plate_pins[8] = {2,3,4,7,8,9,10,11};
 
-// Function prototypes
-void checkPlate();
-void allColor(CRGB c);
-void allRandom();
-void turnAllOff();
-void solidRGB();
-void colorWipe();
-int nonBlocking(int speed, int thisCmd);
-void rainbow(int cycles, int speed);
-void lightning(CRGB c, int simultaneous, int cycles, int speed);
-void theaterChase(CRGB c, int cycles, int speed);
-void cylon(CRGB c, int width, int speed);
-CRGB Wheel(byte WheelPos);
-CRGB randomColor();
+class LedStrip
+{
+  public:
+  int startLed;
+  int endLed;
 
-// Command management
+  LedStrip(int _startLed, int _endLed)
+  {
+    startLed = _startLed;
+    endLed = _endLed;
+  }
+};
+
+LedStrip ledStrips[8] = 
+    {
+      LedStrip(0, 22), 
+      LedStrip(22, 45), 
+      LedStrip(45, 67),   
+      LedStrip(67, 90),   
+      LedStrip(90, 112),
+      LedStrip(112, 135),
+      LedStrip(135, 157),
+      LedStrip(157, 180)
+    };
+
 byte cmd = 0;
-byte oldcmd = 0;
-long previousMillis = 0;  
-unsigned long currentMillis;
+uint8_t gHue = 0;
+CRGB rc;
 
-// Initialization code
 void setup() 
 {
   // Debug
   Serial.begin(9600);
   Serial.println("Starting...");
-
   // Edison Serial
   mySerial.begin(9600);
-   
-  //pinMode(PLATE, INPUT);
-  //attachInterrupt(digitalPinToInterrupt(PLATE), platePressed, CHANGE);
-
+  // Pressure plates
+  for(int i=0; i<8; i++)
+  {
+    pinMode(plate_pins[i], INPUT_PULLUP);
+    pressure_plates[i].platePin = plate_pins[i];
+  }
   // Led strip
-  FastLED.addLeds<NEOPIXEL, LEDSTRIP>(leds, NUM_LEDS);
-
-  // Random generator
-  randomSeed(analogRead(0));
-
-  // HX711 / Load Cell 
-  scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
-  scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
+  FastLED.addLeds<NEOPIXEL, LEDSTRIP>(real_leds, NUM_LEDS);
 }
 
-
-// Main code loop
 void loop() 
 {
   // Edison Serial
@@ -81,286 +95,180 @@ void loop()
   {
     // New command received
     cmd = mySerial.read();
-
+    wipe();
     // Debug
     Serial.println();
     Serial.print("####### New CMD: ");
     Serial.print(cmd, HEX);
     Serial.println(" #########");
+    rc = randomColor();
   }
 
-  // Check plate press
-  checkPlate();  
+  updatePlateState();
 
-  // LED Commands
-  switch(cmd)
+  if(millis() - lastUpdate > patternInterval) 
+    updatePattern(cmd);
+
+}
+
+void updatePattern(int cmd)
+{
+  switch(cmd) 
   {
-    // Turn all off
     case 0:
-      turnAllOff();
-      break;
-      
-    // Solid RGB color
-    case 1:
-       solidRGB();
-      break;
-
-    // Rainbow
+        wipe(); 
+        break;
+    case 1: 
+        solidColor(rc);
+        break;
     case 2:
-      rainbow(FAST,1);
-      break;
-
-    // Random Color Lightning
+        rainbowCycle();
+        break;
     case 3:
-      lightning(NULL, 20,50,MEDIUM);
-      break;
-
-    // Theater Chase (Random color)
+         juggle();
+         break;     
     case 4:
-      theaterChase(randomColor(),10,SLOW);
-      break;
-
-    // Cylon (Random color)
+        theaterChaseRainbow(); 
+        break;
     case 5:
-      cylon(randomColor(), 10,FAST);
-      break;
-      
-    // None of the above
-    default:
-      turnAllOff();
-      break;
-  }
+        sinelon();
+        break;
+    case 6:
+        confetti();
+        break;
+    case 7:
+        bpm();
+  } 
+
+  rainbowing();
 }
 
-void checkPlate()
+void rainbowing()
 {
-  // Weight on load cell
-  count++;
-  if(((cmd != 0) && (count > 700)) || (cmd == 0) && (count > 50))
-  {
-    count = 0;
-    w = scale.get_units();
-    Serial.print("Weight: ");
-    Serial.println(w);
-  }
+  static uint16_t k=0;
+  for(int i=0; i<8; i++)
+    for(int i=0; i< 25; i++) {
+      rainbow_leds[i] = Wheel(((i * 256 / 25) + k) & 255);
+    }
+  k++;
+  if(k >= 256*5) k=0;
   
-  if(w < -20.0)
-  {
-    
-    // If some time has passed since the last press...
-    currentPressedMillis = millis(); 
-    if((platepr == false) && (currentPressedMillis - lastPressedMillis > 500))
-    {
-      // Plate pressed!
-      Serial.println("########## Plate pressed! #########");
-      Serial.print("Old cmd: ");
-      Serial.println(cmd);
-      oldcmd = cmd;
-      // Switch to rainbow
-      cmd = 2;
-      Serial.print("New cmd: ");
-      Serial.println(cmd);
-      platepr = true;
-    }      
-    lastPressedMillis = currentPressedMillis;
+  for(int i = 0; i < NUM_LEDS; i++)
+    real_leds[i] = leds[i];
+  
+  for(int i=0; i<8; i++)
+    if(pressure_plates[i].platePressed == true)
+      for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+        real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
+  FastLED.show();
+}
+
+void solidColor(CRGB c)
+{
+  for ( int i = 0; i < NUM_LEDS; i++)
+    leds[i] = c;
+}
+
+void bpm()
+{
+  // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
+  uint8_t BeatsPerMinute = 62;
+  CRGBPalette16 palette = PartyColors_p;
+  uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
+  for ( int i = 0; i < NUM_LEDS; i++) { //9948
+    leds[i] = ColorFromPalette(palette, gHue + (i * 2), beat - gHue + (i * 10));
   }
-  else
-  {
-    if(platepr == true)
-    {
-      platepr = false;
-      cmd = oldcmd;
-      Serial.println("########## Plate unpressed! #########");
+}
+
+void confetti()
+{
+  // random colored speckles that blink in and fade smoothly
+  fadeToBlackBy( leds, NUM_LEDS, 10);
+  int pos = random16(NUM_LEDS);
+  leds[pos] += CHSV( random8(128)+127, random8(128)+127, random8(128)+127);
+}
+
+void rainbowCycle() 
+{
+  static uint16_t j=0;
+    for(int i=0; i< NUM_LEDS; i++) {
+      leds[i] = Wheel(((i * 256 / NUM_LEDS) + j) & 255);
     }
-  }
+  j++;
+  if(j >= 256*8) j=0;
+  lastUpdate = millis(); // time for next change to the display
 }
 
-int nonBlocking(int speed, int thisCmd)
-{
-    previousMillis = millis(); 
-    currentMillis = previousMillis; 
-    while(1)
-    {
-      // Delay
-      currentMillis = millis();
-      if(currentMillis - previousMillis > speed)
-        return 0;
-
-      // Stop delay if command has changed
-      if(thisCmd != cmd)
-        return 1;
-
-      // Stop delay if new message has been received
-      if(mySerial.available())
-        return 1;
-      
-      // Check plate press
-      checkPlate();  
-    }
-}
-
-// Changes all LEDS to given color
-void allColor(CRGB c)
-{
-  for(int i=0; i<NUM_LEDS; i++)
-    leds[i] = c;
-  FastLED.show();
-}
-
-void allRandom()
-{
-  for(int i=0; i<NUM_LEDS; i++)
-    leds[i] = randomColor();
-  FastLED.show(); 
-}
-
-// Turn-off
-void turnAllOff()
-{
-  for(int i=0; i<NUM_LEDS; i++)
-    leds[i] = CRGB::Black;
-  FastLED.show();
-}
-
-// Solid RGB
-void solidRGB()
-{
-  CRGB c = randomColor();
-  for(int i=0; i<NUM_LEDS; i++)
-  {
-    leds[i] = c;
-  }
-  FastLED.show();
-}
-
-// Wipes color from end to end
-void colorWipe()
-{
-  CRGB c = randomColor();
-  for(int i=0; i<NUM_LEDS; i++)
-  {
-    leds[i] = c;
-  }
-  FastLED.show();
-  delay(10);
-}
-
-
-// Rainbow colors that slowly cycle across LEDs
-void rainbow(int cycles, int speed)
+void theaterChaseRainbow() 
 { 
-  int thisCmd = 2;
-  if(cycles == 0)
-  {
-    for(int i=0; i< NUM_LEDS; i++) 
-    {
-      leds[i] = Wheel(((i * 256 / NUM_LEDS)) & 255);
-    }
-    FastLED.show();
-  }
-  else
-  {
-    for(int j=0; j<256*cycles; j++) 
-    {
-      for(int i=0; i< NUM_LEDS; i++) 
-      {
-        leds[i] = Wheel(((i * 256 / NUM_LEDS) + j) & 255);
+  static int j=0, q = 0;
+  static boolean on = true;
+     if(on){
+            for (int i=0; i < NUM_LEDS; i=i+3) {
+                leds[i+q] = Wheel( (i+j) % 255);    //turn every third pixel on
+             }
+     }
+      else {
+           for (int i=0; i < NUM_LEDS; i=i+3) {
+               leds[i+q] = 0;        //turn every third pixel off
+                 }
       }
-      FastLED.show();
-
-      if(nonBlocking(speed, thisCmd))
-          return;
-    }
-  }
+     on = !on; // toggel pixelse on or off for next time
+      q++; // update the q variable
+      if(q >=3 ){ // if it overflows reset it and update the J variable
+        q=0;
+        j++;
+        if(j >= 256) j = 0;
+      }
+  lastUpdate = millis(); // time for next change to the display    
 }
 
-// Random flashes of lightning
-void lightning(CRGB c, int simultaneous, int cycles, int speed)
+void wipe()
 {
-  int thisCmd = 3;
-  int flashes[simultaneous];
+   for(int i=0;i<NUM_LEDS;i++)
+       leds[i] = CRGB::Black;
+}
 
-  for(int i=0; i<cycles; i++)
+void sinelon()
+{
+  // a colored dot sweeping back and forth, with fading trails
+  fadeToBlackBy( leds, NUM_LEDS, 20);
+  int pos = beatsin16(13, 0, NUM_LEDS);
+  leds[pos] += CHSV( 0, 255, 192);
+}
+
+void juggle() {
+  // eight colored dots, weaving in and out of sync with each other
+  fadeToBlackBy( leds, NUM_LEDS, 20);
+  byte dothue = 0;
+  for ( int i = 0; i < 8; i++) {
+    leds[beatsin16(i + 7, 0, NUM_LEDS)] |= CHSV(dothue, 200, 255);
+    dothue += 32;
+  }
+}
+
+void updatePlateState()
+{
+  for(int i=0; i<8; i++)
   {
-    for(int j=0; j<simultaneous; j++)
+    if(digitalState(pressure_plates[i].platePin) == 0)
     {
-      int idx = random(NUM_LEDS);
-      flashes[j] = idx;
-      leds[idx] = c ? c : randomColor();
+      if(pressure_plates[i].platePressed == false)
+      {
+        Serial.print("PLATE PRESSED: ");
+        Serial.print(i);
+        Serial.print("\n");
+        mySerial.write(i);
+      }
+      pressure_plates[i].platePressed = true;
     }
-    FastLED.show();
-
-     if(nonBlocking(speed, thisCmd))
-          return;
-    
-    for(int s=0; s<simultaneous; s++)
+    else
     {
-      leds[flashes[s]] = CRGB::Black;
-    }
-    
-     if(nonBlocking(speed, thisCmd))
-          return;
-  }
-}
-
-// Theater-style crawling lights
-void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
-   int thisCmd = 4;
-  for (int j=0; j<cycles; j++) {  
-    for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        int pos = i+q;
-        leds[pos] = c;    //turn every third pixel on
-      }
-      FastLED.show();
-
-       if(nonBlocking(speed, thisCmd))
-          return;
-
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        leds[i+q] = CRGB::Black;        //turn every third pixel off
-      }
+      pressure_plates[i].platePressed = false;
     }
   }
 }
 
-// Sliding bar across LEDs
-void cylon(CRGB c, int width, int speed){
-   int thisCmd = 5;
-  // First slide the leds in one direction
-  for(int i = 0; i <= NUM_LEDS-width; i++) {
-    for(int j=0; j<width; j++){
-      leds[i+j] = c;
-    }
-
-    FastLED.show();
-
-    // now that we've shown the leds, reset to black for next loop
-    for(int j=0; j<5; j++){
-      leds[i+j] = CRGB::Black;
-    }
-    
-     if(nonBlocking(speed, thisCmd))
-          return;
-  }
-
-  // Now go in the other direction.  
-  for(int i = NUM_LEDS-width; i >= 0; i--) {
-    for(int j=0; j<width; j++){
-      leds[i+j] = c;
-    }
-    FastLED.show();
-    for(int j=0; j<width; j++){
-      leds[i+j] = CRGB::Black;
-    }
-
-       if(nonBlocking(speed, thisCmd))
-          return;
-  }
-}
-
-// Input a value 0 to 255 to get a color value.
-// The colours are a transition r - g - b - back to r.
 CRGB Wheel(byte WheelPos) {
   if(WheelPos < 85) {
     return CRGB(WheelPos * 3, 255 - WheelPos * 3, 0);
