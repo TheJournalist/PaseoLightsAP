@@ -99,11 +99,6 @@ void loop()
   {
     // New command received
     cmd = mySerial.read();
-    if(cmd == 12)
-    {
-      while(mySerial.available())
-        int whatever = mySerial.read();
-    }
     
     currentPos = -2;
     wipe();
@@ -220,10 +215,10 @@ void updatePattern(int cmd)
         break;
   } 
 
-  Serial.print("OUT OF SWITCH\n");
   if(cmd == 12)
   {
-    Serial.print("NEW CMD\n");
+    while(mySerial.available())
+        int whatever = mySerial.read();
     cmd = 2;
     wipe();  
   }
