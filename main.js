@@ -79,9 +79,6 @@ io.on('connection', function(socket) {
     socket.on('command', function(command) {
         console.log(getDateTime() + " - " + clientIP + " - cmd: " + command);
         cfg.io.writeStr(String.fromCharCode(command));
-        cfg.io.writeStr(String.fromCharCode(command));
-        cfg.io.writeStr(String.fromCharCode(command));
-        cfg.io.writeStr(String.fromCharCode(command));
     });
     
     // If we get a score, compare it to other scores
