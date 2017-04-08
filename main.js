@@ -79,6 +79,9 @@ io.on('connection', function(socket) {
     socket.on('command', function(command) {
         console.log(getDateTime() + " - " + clientIP + " - cmd: " + command);
         cfg.io.writeStr(String.fromCharCode(command));
+        cfg.io.writeStr(String.fromCharCode(command));
+        cfg.io.writeStr(String.fromCharCode(command));
+        cfg.io.writeStr(String.fromCharCode(command));
     });
     
     // If we get a score, compare it to other scores
@@ -168,8 +171,7 @@ cfg.io.setTimeout(0, 0, 0);
 setInterval(function(){
     if(cfg.io.dataAvailable(0))
     {
-        var data;
-        cfg.io.read(data,1);
+        var data = cfg.io.readStr(1);
         console.log(" Pressure plate pressed: " + data);
     }
 }, 200);
