@@ -83,7 +83,7 @@ io.on('connection', function(socket) {
         cfg.io.writeStr(String.fromCharCode(command));
         cfg.io.writeStr(String.fromCharCode(command));
     });
-    
+    /*
     // If we get a score, compare it to other scores
     socket.on('score', function(score) {
         console.log(clientIP + ": " + score);
@@ -128,7 +128,7 @@ io.on('connection', function(socket) {
             }
         }
         console.log(scoreContent.highscores);
-        
+        */
         // Write high scores to file
         fs.writeFile(__dirname + "/" + highscoresFile, 
                      JSON.stringify(scoreContent, null, 4), function(err) {
@@ -166,7 +166,7 @@ cfg.io.setBaudRate(9600);
 cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
-
+/*
 var lastScore;
 
 setInterval(function(){
@@ -179,7 +179,7 @@ setInterval(function(){
         console.log(" Game score: " + data);
     }
 }, 100);
-
+*/
 // Start server
 console.log(sitePath);
 console.log("Starting server in: " + __dirname + '/' + sitePath);
