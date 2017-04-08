@@ -154,16 +154,16 @@ void updatePattern(int cmd)
         bpm();
         break;
     case 8:
-        dest = 8;
+        dest = 0;
         break;
     case 9:
-        dest = 9;
+        dest = 2;
         break;
     case 10:
-        dest = 10;
+        dest = 5;
         break;
     case 11:
-        dest = 11;
+        dest = 6;
         break;
     default:
         navi = false;
