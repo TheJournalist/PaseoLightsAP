@@ -160,7 +160,7 @@ void loop()
 
 void updatePattern(int cmd)
 {
-  if(cmd < 8)
+  if((cmd < 8) || (cmd == 12))
     navi = false;
   else
     navi = true;
@@ -225,6 +225,9 @@ void game()
   int path[8] = {5,2,4,3,1,0,6,7};
   unsigned long startTime = millis();
   bool timeout = false;
+
+  for(int i = 0; i<NUM_LEDS; i++)
+    real_leds[i] = CRGB::Black;
   
   Serial.print("Game started!");
   for(int i = 0; i<8; i++)
