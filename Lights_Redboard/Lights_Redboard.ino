@@ -99,12 +99,54 @@ void loop()
   {
     // New command received
     cmd = mySerial.read();
+    currentPos = -1;
     wipe();
+    
     // Debug
-    Serial.println();
-    Serial.print("####### New CMD: ");
+    Serial.print("CMD: ");
     Serial.print(cmd, HEX);
-    Serial.println(" #########");
+    switch(cmd) 
+    {
+      case 0:
+          Serial.print(" - Clear LEDS\n");
+          break;
+      case 1: 
+          Serial.print(" - Random Solid Color\n");
+          break;
+      case 2:
+          Serial.print(" - Rainbow\n");
+          break;
+      case 3:
+          Serial.print(" - Juggle\n");
+          break;     
+      case 4:
+          Serial.print(" - Theater chase\n");
+          break;
+      case 5:
+          Serial.print(" - Cylon\n");
+          break;
+      case 6:
+          Serial.print(" - Confetti\n");
+          break;
+      case 7:
+          Serial.print(" - BMP\n");
+          break;
+      case 8:
+          Serial.print(" - Destination: Plate 0\n");
+          break;
+      case 9:
+          Serial.print(" - Destination: Plate 2\n");
+          break;
+      case 10:
+          Serial.print(" - Destination: Plate 5\n");
+          break;
+      case 11:
+          Serial.print(" - Destination: Plate 6\n");
+          break;
+      default:
+          Serial.print(" - ??? Clear LEDS\n");
+          break;
+    } 
     rc = randomColor();
   }
 
@@ -118,14 +160,9 @@ void loop()
 void updatePattern(int cmd)
 {
   if(cmd < 8)
-  {
     navi = false;
-    currentPos = -1;
-  }
   else
-  {
     navi = true;
-  }
   
   switch(cmd) 
   {
@@ -193,22 +230,24 @@ void rainbowing()
     {
       for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
       {
-        if(navi)
+        real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
+      }
+    }
+
+    if(navi)
+    {
+      if(i == currentPos)
+      {
+        for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
         {
-          if(i == currentPos)
-          {
-            if(currentPos != dest)
-              real_leds[j] = CRGB::Red;
-            else
-              real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
-          }
-        }
-        else
-        {
-          real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
+          if(currentPos != dest)
+            real_leds[j] = CRGB::Red;
+          else
+            real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
         }
       }
     }
+    
   }
   FastLED.show();
 }
@@ -314,14 +353,23 @@ void updatePlateState()
         {
           if(currentPos == -1)
           {
+            mySerial.print("Initial position: Plate ");
+            mySerial.print(i);
+            mySerial.print("\n");
             currentPos = i;
           }
           else if((currentPos > dest) && (i == currentPos-1))
           {
+            mySerial.print("Current position: Plate ");
+            mySerial.print(i);
+            mySerial.print("\n");
             currentPos = i;
           }
           else if((currentPos < dest) && (i == currentPos+1))
           {
+            mySerial.print("Current position: Plate ");
+            mySerial.print(i);
+            mySerial.print("\n");
             currentPos = i;
           }
 
@@ -329,8 +377,7 @@ void updatePlateState()
           {
             mySerial.write(15);
           }
-        }
-          
+        } 
       }
       pressure_plates[i].platePressed = true;
     }
