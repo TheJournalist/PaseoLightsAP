@@ -205,6 +205,8 @@ void updatePattern(int cmd)
         break;
     case 12:
         game();
+        cmd = 2;
+        return;
         break;
     default:
         navi = false;
@@ -212,9 +214,6 @@ void updatePattern(int cmd)
         wipe();
         break;
   } 
-  
-  if(cmd == 12)
-    cmd = 2;
   
   rainbowing();
 }
@@ -224,7 +223,6 @@ void game()
   // 63542178
   int path[8] = {5,2,4,3,1,0,6,7};
   unsigned long startTime = millis();
-  bool timeout = false;
 
   for(int i = 0; i<NUM_LEDS; i++)
     real_leds[i] = CRGB::Black;
@@ -240,16 +238,13 @@ void game()
     {
       if(millis() - startTime > 60000)
       {
-        timeout = true;
-        break;
+        Serial.print("TIMEOUT");
+        return;
       }
     }
 
     for(int j = ledStrips[path[i]].startLed; j<ledStrips[path[i]].endLed; j++)
       real_leds[j] = CRGB::Black;
-
-    if(timeout)
-      break;
   }
   unsigned long endTime = millis() - startTime;
   Serial.print("Tempo(ms): ");
