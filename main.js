@@ -128,7 +128,7 @@ io.on('connection', function(socket) {
             }
         }
         console.log(scoreContent.highscores);
-        */
+        
         // Write high scores to file
         fs.writeFile(__dirname + "/" + highscoresFile, 
                      JSON.stringify(scoreContent, null, 4), function(err) {
@@ -138,7 +138,7 @@ io.on('connection', function(socket) {
                 console.log("High scores saved");
             }
         });
-    })
+    })*/
 });
 
 // confirm that we have a version of libmraa and Node.js that works
