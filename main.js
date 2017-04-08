@@ -164,9 +164,15 @@ cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
 
-port.on('data', (data) => {
-  console.log(data.toString());
-});
+
+setInterval(function(){
+    if(cfg.io.dataAvailable(0))
+    {
+        var data;
+        cfg.io.read(data,1);
+        console.log(" Pressure plate pressed: " + data);
+    }
+}, 200);
 
 // Start server
 console.log(sitePath);
