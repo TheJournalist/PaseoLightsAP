@@ -99,6 +99,12 @@ void loop()
   {
     // New command received
     cmd = mySerial.read();
+    if(cmd == 12)
+    {
+      while(mySerial.available())
+        int whatever = mySerial.read();
+    }
+    
     currentPos = -2;
     wipe();
     
@@ -205,6 +211,7 @@ void updatePattern(int cmd)
         break;
     case 12:
         game();
+        wipe();
         cmd = 2;
         return;
         break;
