@@ -242,10 +242,20 @@ void rainbowing()
         for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
         {
           if(currentPos != dest)
-            real_leds[j] = CRGB::Red;
+            real_leds[j] = CRGB::Orange;
           else
             real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
         }
+      }
+      else if((currentPos > dest) && (i == currentPos-1))
+      {
+        for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+            real_leds[j] = CRGB::Green;
+      }
+      else if((currentPos < dest) && (i == currentPos+1))
+      {
+        for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+            real_leds[j] = CRGB::Green;
       }
       else
       {
