@@ -1,6 +1,7 @@
 // Parameters
 var sitePath = "www";
 var port = 80;
+var highscoresFile = "highscores.json"
 
 "use strict" ;
 // Libraries
@@ -16,6 +17,11 @@ var sys = require('sys')
 var exec = require('child_process').exec;
 var child;
 var cfg = require("./utl/cfg-app-platform.js")() ; 
+
+// Read high scores
+var scoreContent = fs.readFileSync(__dirname + "/" + highscoresFile);
+scoreContent = JSON.parse(scoreContent);
+console.log(scoreContent);
 
 // Create a new Johnny-Five board object
 var board = new five.Board({
@@ -35,6 +41,10 @@ app.use(function(req, res, next) {
         console.log("Serving page");
     }
     next();
+});
+
+app.get('/about', function (req, res) {
+  res.sendFile(__dirname + 'game/index.html');
 });
 
 // Date
@@ -62,6 +72,62 @@ io.on('connection', function(socket) {
         console.log(getDateTime() + " - " + clientIP + " - cmd: " + command);
         cfg.io.writeStr(String.fromCharCode(command));
     });
+    
+    // If we get a score, compare it to other scores
+    socket.on('score', function(score) {
+        console.log(clientIP + ": " + score);
+        if (score > scoreContent.highscores[scoreContent.highscores.length - 1].score) {
+            console.log("High score! Requesting initials");
+            socket.emit('initialsRequest', '');
+        }
+    });
+    
+    // If we get initials back, store them with the high scores
+    socket.on('initialsScore', function(msg) {
+        console.log(msg.initials + ": " + msg.score);
+        
+        // Check for top score
+        if (msg.score > scoreContent.highscores[0].score) {
+            scoreContent.highscores.splice(0, 0, {
+                        "initials": msg.initials, 
+                        "score": msg.score
+            });
+            scoreContent.highscores.splice(-1, 1);
+            
+        // Check for other placement in high scores
+        } else {
+            for (var i = scoreContent.highscores.length - 1; i >= 0; i--) {
+                if ((msg.score <= scoreContent.highscores[i].score) || 
+                    (i === 0)) {
+                    if (i === scoreContent.highscores.length - 1) {
+                        scoreContent.highscores.push({
+                            "initials": msg.initials, 
+                            "score": msg.score
+                        });
+                    } else {
+                        scoreContent.highscores.splice(i + 1, 0, {
+                            "initials": msg.initials, 
+                            "score": msg.score
+                        });
+                    }
+                    console.log(scoreContent.highscores);
+                    scoreContent.highscores.splice(-1, 1);
+                    break;
+                }
+            }
+        }
+        console.log(scoreContent.highscores);
+        
+        // Write high scores to file
+        fs.writeFile(__dirname + "/" + highscoresFile, 
+                     JSON.stringify(scoreContent, null, 4), function(err) {
+            if (err) {
+                console.log("Cound not save high scores: " + err);
+            } else {
+                console.log("High scores saved");
+            }
+        });
+    })
 });
 
 // confirm that we have a version of libmraa and Node.js that works
@@ -90,6 +156,10 @@ cfg.io.setMode(8, cfg.mraa.UART_PARITY_NONE, 1);
 cfg.io.setFlowcontrol(false, false);
 cfg.io.setTimeout(0, 0, 0);  
 
+port.on('data', (data) => {
+  console.log(data.toString());
+});
+
 // Start server
 console.log(sitePath);
 console.log("Starting server in: " + __dirname + '/' + sitePath);
@@ -97,3 +167,4 @@ app.use(express.static(__dirname + '/' + sitePath));
 http.listen(port, function() {
     console.log("Server running at: http://localhost:" + port);
 });
+
