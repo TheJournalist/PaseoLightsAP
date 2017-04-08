@@ -138,6 +138,7 @@ void updatePattern(int cmd)
         break;
     case 7:
         bpm();
+        break;
   } 
 
   rainbowing();
