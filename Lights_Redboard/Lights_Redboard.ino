@@ -203,6 +203,9 @@ void updatePattern(int cmd)
     case 11:
         dest = 6;
         break;
+    case 12:
+        game();
+        break;
     default:
         navi = false;
         currentPos = -1;
@@ -210,6 +213,29 @@ void updatePattern(int cmd)
         break;
   } 
   rainbowing();
+}
+
+void game()
+{
+  // 63542178
+  int path[8] = {6,3,5,4,2,1,7,8};
+  unsigned long startTime = millis();
+  Serial.print("Game started!");
+  for(int i = 0; i<8; i++)
+  {
+    for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+      real_leds[j] = CRGB::LightBlue;
+      
+    while(digitalState(pressure_plates[i].platePin) == 1){}
+    
+    for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+      real_leds[j] = CRGB::Black;
+  }
+  unsigned long endTime = millis() - startTime;
+  Serial.print("Tempo(ms): ");
+  Serial.print(endTime);
+  Serial.print("\n");
+  cmd = 2;
 }
 
 void rainbowing()
