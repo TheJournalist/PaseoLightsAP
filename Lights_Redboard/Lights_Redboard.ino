@@ -367,7 +367,7 @@ void updatePlateState()
         
         if(navi)
         {
-          if(currentPos == -1)
+          if(currentPos == -2)
           {
             Serial.print("Initial position: Plate ");
             Serial.print(i);
