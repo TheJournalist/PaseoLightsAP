@@ -81,6 +81,7 @@ io.on('connection', function(socket) {
         cfg.io.writeStr(String.fromCharCode(command));
         cfg.io.writeStr(String.fromCharCode(command));
         cfg.io.writeStr(String.fromCharCode(command));
+        cfg.io.writeStr(String.fromCharCode(command));
     });
     
     // If we get a score, compare it to other scores
