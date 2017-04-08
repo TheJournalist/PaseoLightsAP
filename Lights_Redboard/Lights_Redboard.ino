@@ -69,6 +69,10 @@ LedStrip ledStrips[8] =
 
 byte cmd = 0;
 uint8_t gHue = 0;
+
+bool navi = false;
+int dest = 0;
+int currentPos = -1;
 CRGB rc;
 
 void setup() 
@@ -113,6 +117,16 @@ void loop()
 
 void updatePattern(int cmd)
 {
+  if(cmd < 8)
+  {
+    navi = false;
+    currentPos = -1;
+  }
+  else
+  {
+    navi = true;
+  }
+  
   switch(cmd) 
   {
     case 0:
@@ -125,8 +139,8 @@ void updatePattern(int cmd)
         rainbowCycle();
         break;
     case 3:
-         juggle();
-         break;     
+        juggle();
+        break;     
     case 4:
         theaterChaseRainbow(); 
         break;
@@ -139,8 +153,24 @@ void updatePattern(int cmd)
     case 7:
         bpm();
         break;
+    case 8:
+        dest = 8;
+        break;
+    case 9:
+        dest = 9;
+        break;
+    case 10:
+        dest = 10;
+        break;
+    case 11:
+        dest = 11;
+        break;
+    default:
+        navi = false;
+        currentPos = -1;
+        wipe();
+        break;
   } 
-
   rainbowing();
 }
 
@@ -158,9 +188,28 @@ void rainbowing()
     real_leds[i] = leds[i];
   
   for(int i=0; i<8; i++)
+  {
     if(pressure_plates[i].platePressed == true)
+    {
       for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
-        real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
+      {
+        if(navi)
+        {
+          if(i == currentPos)
+          {
+            if(currentPos != dest)
+              real_leds[j] = CRGB::Red;
+            else
+              real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
+          }
+        }
+        else
+        {
+          real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
+        }
+      }
+    }
+  }
   FastLED.show();
 }
 
@@ -260,6 +309,28 @@ void updatePlateState()
         Serial.print(i);
         Serial.print("\n");
         mySerial.write(i);
+        
+        if(navi)
+        {
+          if(currentPos == -1)
+          {
+            currentPos = i;
+          }
+          else if((currentPos > dest) && (i == currentPos-1))
+          {
+            currentPos = i;
+          }
+          else if((currentPos < dest) && (i == currentPos+1))
+          {
+            currentPos = i;
+          }
+
+          if(currentPos == dest)
+          {
+            mySerial.write(15);
+          }
+        }
+          
       }
       pressure_plates[i].platePressed = true;
     }
