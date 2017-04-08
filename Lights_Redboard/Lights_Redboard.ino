@@ -225,10 +225,11 @@ void game()
   Serial.print("Game started!");
   for(int i = 0; i<8; i++)
   {
-    for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+    for(int j = ledStrips[path[i]].startLed; j<ledStrips[path[i]].endLed; j++)
       real_leds[j] = CRGB::LightBlue;
-      
-    while(digitalState(pressure_plates[i].platePin) == 1)
+
+    FastLED.show();
+    while(digitalState(pressure_plates[path[i]].platePin) == 1)
     {
       if(millis() - startTime > 60000)
       {
@@ -237,7 +238,7 @@ void game()
       }
     }
 
-    for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+    for(int j = ledStrips[path[i]].startLed; j<ledStrips[path[i]].endLed; j++)
       real_leds[j] = CRGB::Black;
 
     if(timeout)
