@@ -187,10 +187,3 @@ app.use(express.static(__dirname + '/' + sitePath));
 http.listen(port, function() {
     console.log("Server running at: http://localhost:" + port);
 });
-
-
-
-port.on('data', (data) => {
-  lastScore = data.toString();
-  console.log(data.toString());
-});
