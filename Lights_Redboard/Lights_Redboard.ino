@@ -244,7 +244,7 @@ void game()
       if(millis() - startTime > 60000)
       {
         Serial.print("TIMEOUT\n");
-        mySerial.print(60000);
+        //mySerial.print(60000);
         return;
       }
     }
@@ -255,7 +255,7 @@ void game()
   unsigned long endTime = millis() - startTime;
   Serial.print("Tempo(ms): ");
   Serial.print(endTime);
-  mySerial.print(endTime);
+  //mySerial.print(endTime);
   Serial.print("\n");
 }
 
