@@ -244,6 +244,7 @@ void game()
       if(millis() - startTime > 60000)
       {
         Serial.print("TIMEOUT\n");
+        mySerial.print(60000);
         return;
       }
     }
@@ -254,6 +255,7 @@ void game()
   unsigned long endTime = millis() - startTime;
   Serial.print("Tempo(ms): ");
   Serial.print(endTime);
+  mySerial.print(endTime);
   Serial.print("\n");
 }
 
@@ -408,7 +410,7 @@ void updatePlateState()
         Serial.print("PLATE PRESSED: ");
         Serial.print(i);
         Serial.print("\n");
-        mySerial.write(i);
+        //mySerial.write(i);
         
         if(navi)
         {
@@ -436,7 +438,7 @@ void updatePlateState()
 
           if(currentPos == dest)
           {
-            mySerial.write(15);
+            //mySerial.write(15);
           }
         } 
       }
