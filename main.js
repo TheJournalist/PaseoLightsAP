@@ -44,15 +44,15 @@ app.use(function(req, res, next) {
 });
 
 app.get('/light.html', function (req, res) {
-  res.sendFile(__dirname + '/light.html');
+  res.sendFile(__dirname + 'www/light.html');
 });
 
 app.get('/game.html', function (req, res) {
-  res.sendFile(__dirname + '/game.html');
+  res.sendFile(__dirname + 'www/game.html');
 });
 
 app.get('/navi.html', function (req, res) {
-  res.sendFile(__dirname + '/navi.html');
+  res.sendFile(__dirname + 'www/navi.html');
 });
 
 // Date
