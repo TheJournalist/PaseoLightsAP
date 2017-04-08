@@ -246,6 +246,11 @@ void rainbowing()
             real_leds[j] = rainbow_leds[ledStrips[i].endLed - j];
         }
       }
+      else
+      {
+        for(int j = ledStrips[i].startLed; j<ledStrips[i].endLed; j++)
+            real_leds[j] = CRGB::Black;
+      }
     }
     
   }
