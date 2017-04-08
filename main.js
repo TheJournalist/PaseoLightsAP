@@ -43,8 +43,16 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/about', function (req, res) {
-  res.sendFile(__dirname + 'game/index.html');
+app.get('/light.html', function (req, res) {
+  res.sendFile(__dirname + '/light.html');
+});
+
+app.get('/game.html', function (req, res) {
+  res.sendFile(__dirname + '/game.html');
+});
+
+app.get('/navi.html', function (req, res) {
+  res.sendFile(__dirname + '/navi.html');
 });
 
 // Date
