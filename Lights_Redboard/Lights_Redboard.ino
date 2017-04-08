@@ -105,7 +105,8 @@ void loop()
     // Debug
     Serial.print("CMD: ");
     Serial.print(cmd, HEX);
-    switch(cmd) 
+    Serial.print("\n");
+    /*switch(cmd) 
     {
       case 0:
           Serial.print(" - Clear LEDS\n");
@@ -146,7 +147,7 @@ void loop()
       default:
           Serial.print(" - ??? Clear LEDS\n");
           break;
-    } 
+    } */
     rc = randomColor();
   }
 
@@ -358,23 +359,23 @@ void updatePlateState()
         {
           if(currentPos == -1)
           {
-            Serial.print("Initial position: Plate ");
-            Serial.print(i);
-            Serial.print("\n");
+            mySerial.print("Initial position: Plate ");
+            mySerial.print(i);
+            mySerial.print("\n");
             currentPos = i;
           }
           else if((currentPos > dest) && (i == currentPos-1))
           {
-            Serial.print("Current position: Plate ");
-            Serial.print(i);
-            Serial.print("\n");
+            mySerial.print("Current position: Plate ");
+            mySerial.print(i);
+            mySerial.print("\n");
             currentPos = i;
           }
           else if((currentPos < dest) && (i == currentPos+1))
           {
-            Serial.print("Current position: Plate ");
-            Serial.print(i);
-            Serial.print("\n");
+            mySerial.print("Current position: Plate ");
+            mySerial.print(i);
+            mySerial.print("\n");
             currentPos = i;
           }
 
