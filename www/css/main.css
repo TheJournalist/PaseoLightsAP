@@ -3760,3 +3760,12 @@
 			}
 
 	}
+
+	.click-led {
+		background: none;
+		border: none;
+		text-decoration: none;
+		position: relative;
+		font-size: 20px;
+		
+	}
