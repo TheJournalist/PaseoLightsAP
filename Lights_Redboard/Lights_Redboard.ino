@@ -211,7 +211,7 @@ void updatePattern(int cmd)
         break;
     case 12:
         game();
-        Serial.print("GAME ENDED\n")
+        Serial.print("GAME ENDED\n");
         break;
     default:
         navi = false;
@@ -220,10 +220,10 @@ void updatePattern(int cmd)
         break;
   } 
 
-  Serial.print("OUT OF SWITCH\n")
+  Serial.print("OUT OF SWITCH\n");
   if(cmd == 12)
   {
-    Serial.print("NEW CMD\n")
+    Serial.print("NEW CMD\n");
     cmd = 2;
     wipe();  
   }
